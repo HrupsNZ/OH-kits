@@ -8,26 +8,16 @@
 # 3) run out container: `docker run -ti --volumes-from data empireproject/empire /bin/bash`
 
 # -----RELEASE COMMANDS----
-# 1) `USERNAME=empireproject`
-# 2) `IMAGE=empire`
-# 3) `git pull`
-# 4) `export VERSION="$(curl -s https://raw.githubusercontent.com/EmpireProject/Empire/master/lib/common/empire.py | grep "VERSION =" | cut -d '"' -f2)"`
-# 5) `docker tag $USERNAME/$IMAGE:latest $USERNAME/$IMAGE:$VERSION`
-# 1) `docker push $USERNAME/$IMAGE:latest`
-# 2) `docker push $USERNAME/$IMAGE:$VERSION`
+# Handled by GitHub Actions
 
 # -----BUILD ENTRY-----
 
 # image base
 FROM python:3.7.5-buster
 
-# pull from BUILD
-ARG empirversion
-
 # extra metadata
-LABEL maintainer="EmpireProject"
+LABEL maintainer="bc-security"
 LABEL description="Dockerfile base for Empire server."
-LABEL version=${empirversion}
 
 # env setup
 ENV STAGING_KEY=RANDOM
@@ -48,5 +38,6 @@ RUN cd /empire/setup/ && \
 
 RUN python /empire/setup/setup_database.py
 
-WORKDIR "/empire"
+WORKDIR /empire
+
 CMD ["python", "empire"]
