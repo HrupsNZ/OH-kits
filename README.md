@@ -59,7 +59,7 @@ docker run -it bcsecurity/empire:{version}
 # with persistent storage
 docker pull bcsecurity/empire:{version}
 docker create -v /empire --name data bcsecurity/empire:{version}
-docker run -it --volumes-from data bcsecurity/empire:{version} /bin/bash
+docker run -it --volumes-from data bcsecurity/empire:{version}
 
 # if you prefer to be dropped into bash instead of directly into empire
 # or docker run -it --volumes-from data bcsecurity/empire:{version} /bin/bash
