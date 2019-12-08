@@ -1,11 +1,11 @@
 # NOTE: Only use this when you want to build image locally
-#       else use `docker pull empireproject/empire:{VERSION}`
-#       all image versions can be found at: https://hub.docker.com/r/empireproject/empire/
+#       else use `docker pull bcsecurity/empire:{VERSION}`
+#       all image versions can be found at: https://hub.docker.com/r/bcsecurity/empire/
 
 # -----BUILD COMMANDS----
-# 1) build command: `docker build -t empireproject/empire .`
-# 2) create volume storage: `docker create -v /opt/Empire --name data empireproject/empire`
-# 3) run out container: `docker run -ti --volumes-from data empireproject/empire /bin/bash`
+# 1) build command: `docker build -t bcsecurity/empire .`
+# 2) create volume storage: `docker create -v /empire --name data bcsecurity/empire`
+# 3) run out container: `docker run -ti --volumes-from data bcsecurity/empire /bin/bash`
 
 # -----RELEASE COMMANDS----
 # Handled by GitHub Actions
