@@ -178,7 +178,15 @@ fi
 
 install_powershell
 
-sudo pip install -r $Pip_file
+if ls /usr/bin/ | grep -q "python3"; then
+	if ! type pip3 > /dev/null; then
+		sudo apt-get --assume-yes install python3-pip
+	fi
+	sudo pip3 install -r $Pip_file.txt
+fi
+if ls /usr/bin/ | grep -q "python2"; then
+	sudo pip install -r $Pip_file.txt
+fi
 
 # set up the database schema
 python ./setup_database.py
