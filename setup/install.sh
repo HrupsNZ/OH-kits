@@ -1,13 +1,7 @@
 #!/bin/bash
 function install_powershell() {
-	# Mac
-	if uname | grep -q "Darwin"; then
-		brew install openssl
-		brew install curl --with-openssl
-		brew tap caskroom/cask
-		brew cask install powershell
 	# Deb 10.x
-	elif cat /etc/debian_version | grep 10.* ; then
+	if cat /etc/debian_version | grep 10.* ; then
 		sudo apt-get install -y apt-transport-https curl
 		curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 		sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list'
@@ -136,16 +130,7 @@ fi
 
 Pip_file="requirements.txt"
 
-if uname | grep -q "Darwin"; then
-	sudo pip install -r requirements.txt --global-option=build_ext \
-		--global-option="-L/usr/local/opt/openssl/lib" \
-		--global-option="-I/usr/local/opt/openssl/include"
-	# In order to build dependencies these should be exported.
-	export LDFLAGS=-L/usr/local/opt/openssl/lib
-	export CPPFLAGS=-I/usr/local/opt/openssl/include
-elif lsb_release -d | grep -q "Fedora"; then
-	sudo dnf install -y make automake gcc gcc-c++  python-devel m2crypto python-m2ext swig libxml2-devel java-openjdk-headless openssl-devel openssl libffi-devel redhat-rpm-config
-elif lsb_release -d | grep -q "Kali"; then
+if lsb_release -d | grep -q "Kali"; then
 	apt-get update
 	sudo apt-get install -y make g++ python-dev python-m2crypto swig python-pip libxml2-dev default-jdk zlib1g-dev libssl1.1 build-essential libssl-dev libxml2-dev zlib1g-dev
 elif lsb_release -d | grep -q "Ubuntu"; then
@@ -171,10 +156,7 @@ fi
 
 install_xar
 
-# NIT: This fails on OSX. Leaving it only on Linux instances.
-if uname | grep -q "Linux"; then
-	install_bomutils
-fi
+install_bomutils
 
 install_powershell
 
@@ -182,10 +164,10 @@ if ls /usr/bin/ | grep -q "python3"; then
 	if ! type pip3 > /dev/null; then
 		sudo apt-get --assume-yes install python3-pip
 	fi
-	sudo pip3 install -r $Pip_file.txt
+	sudo pip3 install -r $Pip_file
 fi
 if ls /usr/bin/ | grep -q "python2"; then
-	sudo pip install -r $Pip_file.txt
+	sudo pip install -r $Pip_file
 fi
 
 # set up the database schema
