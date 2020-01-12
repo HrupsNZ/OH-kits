@@ -14,7 +14,7 @@ from __future__ import absolute_import
 from builtins import input
 from builtins import str
 from builtins import range
-VERSION = "3.0.1 BC-Security Fork"
+VERSION = "3.0.2 BC-Security Fork"
 
 from pydispatch import dispatcher
 
@@ -274,7 +274,6 @@ class MainMenu(cmd.Cmd):
                             
                             # generate the stager
                             menu.do_generate('')
-                            print('empire.py: line 277')
                         else:
                             messages.display_stager(targetStager)
                     
@@ -4473,11 +4472,19 @@ class StagerMenu(SubMenu):
             # if we need to write binary output for a .dll
             if ".dll" in savePath:
                 out_file = open(savePath, 'wb')
-                out_file.write(bytearray(stagerOutput))
+
+                if isinstance(stagerOutput, bytes):
+                    stagerOutput = stagerOutput.decode('latin-1')
+
+                out_file.write(bytearray(stagerOutput,encoding='utf8'))
                 out_file.close()
             else:
                 # otherwise normal output
                 out_file = open(savePath, 'w')
+
+                if isinstance(stagerOutput, bytes):
+                    stagerOutput = stagerOutput.decode('latin-1')
+
                 out_file.write(stagerOutput)
                 out_file.close()
             
