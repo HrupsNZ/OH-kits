@@ -153,7 +153,7 @@ class Stagers(object):
 
             dllRaw = ''
             with open(origPath, 'rb') as f:
-                dllRaw = f.read() 
+                dllRaw = f.read()
 
                 replacementCode = helpers.decode_base64(poshCode)
                 # patch the dll with the new PowerShell code
@@ -163,14 +163,14 @@ class Stagers(object):
 
                 flags = 0
                 flags |= 0x1
-                
+
                 sc = ConvertToShellcode(dllPatched)
 
                 return sc
-        
+
         else:
             print(helpers.color("[!] Original .dll for arch {} does not exist!".format(arch)))
-                
+
 
 
     def generate_macho(self, launcherCode):
@@ -193,10 +193,10 @@ class Stagers(object):
             count = 0
             if int(cmd[count].cmd) == macholib.MachO.LC_SEGMENT_64:
                 count += 1
-                if cmd[count].segname.strip('\x00') == '__TEXT' and cmd[count].nsects > 0:
+                if cmd[count].segname.strip(b'\x00') == b'__TEXT' and cmd[count].nsects > 0:
                     count += 1
                     for section in cmd[count]:
-                        if section.sectname.strip('\x00') == '__cstring':
+                        if section.sectname.strip(b'\x00') == b'__cstring':
                             offset = int(section.offset) + (int(section.size) - 2119)
                             placeHolderSz = int(section.size) - (int(section.size) - 2119)
 
@@ -208,7 +208,7 @@ class Stagers(object):
             key = 'subF'
             launcherCode = ''.join(chr(ord(x) ^ ord(y)) for (x,y) in zip(launcherCode, cycle(key)))
             launcherCode = base64.urlsafe_b64encode(launcherCode)
-            launcher = launcherCode + "\x00" * (placeHolderSz - len(launcherCode))
+            launcher = launcherCode.encode('utf8') + b'\x00' * (placeHolderSz - len(launcherCode))
             patchedMachO = template[:offset]+launcher+template[(offset+len(launcher)):]
 
             return patchedMachO
@@ -246,10 +246,10 @@ class Stagers(object):
             count = 0
             if int(cmd[count].cmd) == macholib.MachO.LC_SEGMENT_64 or int(cmd[count].cmd) == macholib.MachO.LC_SEGMENT:
                 count += 1
-                if cmd[count].segname.strip('\x00') == '__TEXT' and cmd[count].nsects > 0:
+                if cmd[count].segname.strip(b'\x00') == b'__TEXT' and cmd[count].nsects > 0:
                     count += 1
                     for section in cmd[count]:
-                        if section.sectname.strip('\x00') == '__cstring':
+                        if section.sectname.strip(b'\x00') == b'__cstring':
                             offset = int(section.offset)
                             placeHolderSz = int(section.size) - 52
         template = f.read()
@@ -257,7 +257,7 @@ class Stagers(object):
 
         if placeHolderSz and offset:
 
-            launcher = launcherCode + "\x00" * (placeHolderSz - len(launcherCode))
+            launcher = launcherCode.encode('utf8') + b'\x00' * (placeHolderSz - len(launcherCode))
             patchedDylib = template[:offset]+launcher+template[(offset+len(launcher)):]
 
             return patchedDylib
