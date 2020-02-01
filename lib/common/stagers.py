@@ -208,7 +208,7 @@ class Stagers(object):
             key = 'subF'
             launcherCode = ''.join(chr(ord(x) ^ ord(y)) for (x,y) in zip(launcherCode, cycle(key)))
             launcherCode = base64.urlsafe_b64encode(launcherCode)
-            launcher = launcherCode.encode('utf8') + b'\x00' * (placeHolderSz - len(launcherCode))
+            launcher = launcherCode.encode('utf-8') + b'\x00' * (placeHolderSz - len(launcherCode))
             patchedMachO = template[:offset]+launcher+template[(offset+len(launcher)):]
 
             return patchedMachO
@@ -257,7 +257,7 @@ class Stagers(object):
 
         if placeHolderSz and offset:
 
-            launcher = launcherCode.encode('utf8') + b'\x00' * (placeHolderSz - len(launcherCode))
+            launcher = launcherCode.encode('utf-8') + b'\x00' * (placeHolderSz - len(launcherCode))
             patchedDylib = template[:offset]+launcher+template[(offset+len(launcher)):]
 
             return patchedDylib
@@ -304,7 +304,7 @@ class Stagers(object):
 
         if placeHolderSz and offset:
 
-            launcher = launcherCode.encode('utf8') + b'\x00' * (placeHolderSz - len(launcherCode))
+            launcher = launcherCode.encode('utf-8') + b'\x00' * (placeHolderSz - len(launcherCode))
             patchedBinary = template[:offset]+launcher+template[(offset+len(launcher)):]
             if AppName == "":
                 AppName = "launcher"
