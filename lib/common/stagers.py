@@ -246,10 +246,10 @@ class Stagers(object):
             count = 0
             if int(cmd[count].cmd) == macholib.MachO.LC_SEGMENT_64 or int(cmd[count].cmd) == macholib.MachO.LC_SEGMENT:
                 count += 1
-                if cmd[count].segname.strip('\x00') == '__TEXT' and cmd[count].nsects > 0:
+                if cmd[count].segname.strip(b'\x00') == b'__TEXT' and cmd[count].nsects > 0:
                     count += 1
                     for section in cmd[count]:
-                        if section.sectname.strip('\x00') == '__cstring':
+                        if section.sectname.strip(b'\x00') == b'__cstring':
                             offset = int(section.offset)
                             placeHolderSz = int(section.size) - 52
         template = f.read()
@@ -258,7 +258,9 @@ class Stagers(object):
         if placeHolderSz and offset:
 
             launcher = launcherCode + "\x00" * (placeHolderSz - len(launcherCode))
-            patchedDylib = template[:offset]+launcher+template[(offset+len(launcher)):]
+            if isinstance(launcher,str):
+                launcher = launcher.encode('UTF-8')
+            patchedDylib = b"".join([template[:offset],launcher,template[(offset+len(launcher)):]])
 
             return patchedDylib
         else:
