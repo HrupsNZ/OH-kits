@@ -394,9 +394,9 @@ class MainMenu(cmd.Cmd):
             except NavListeners as e:
                 self.menu_state = "Listeners"
             
-            #except Exception as e:
-            #    print(helpers.color("[!] Exception: %s" % (e)))
-            #    time.sleep(5)
+            except Exception as e:
+                print(helpers.color("[!] Exception: %s" % (e)))
+                time.sleep(5)
     
     
     def print_topics(self, header, commands, cmdlen, maxcol):
@@ -4469,7 +4469,7 @@ class StagerMenu(SubMenu):
         "Generate/execute the given Empire stager."
         if not self.validate_options():
             return
-        
+
         stagerOutput = self.stager.generate()
         
         savePath = ''
