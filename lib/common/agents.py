@@ -1496,10 +1496,11 @@ class Agents(object):
                     #this will cause the cmdloop() to start processing the autoruns
                     self.mainMenu.do_agents("kickit")
                 except Exception as e:
-                    if e.message == "endautorun":
+                    if e == "endautorun":
                         pass
                     else:
-                        raise e
+                        #raise e
+                        print(helpers.color("[!] End of Autorun Queue" ))
 
             return "STAGE2: %s" % (sessionID)
 

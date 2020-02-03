@@ -1139,8 +1139,7 @@ class SubMenu(cmd.Cmd):
     
     def emptyline(self):
         pass
-    
-    
+
     def postcmd(self, stop, line):
         if line == "back":
             return True
@@ -1149,8 +1148,7 @@ class SubMenu(cmd.Cmd):
             if nextcmd == "lastautoruncmd":
                 raise Exception("endautorun")
             self.cmdqueue.append(nextcmd)
-    
-    
+
     def do_back(self, line):
         "Go back a menu."
         return True
