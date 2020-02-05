@@ -257,8 +257,10 @@ class Stagers(object):
 
         if placeHolderSz and offset:
 
-            launcher = launcherCode.encode('utf-8') + b'\x00' * (placeHolderSz - len(launcherCode))
-            patchedDylib = template[:offset]+launcher+template[(offset+len(launcher)):]
+            launcher = launcherCode + "\x00" * (placeHolderSz - len(launcherCode))
+            if isinstance(launcher,str):
+                launcher = launcher.encode('UTF-8')
+            patchedDylib = b"".join([template[:offset],launcher,template[(offset+len(launcher)):]])
 
             return patchedDylib
         else:
@@ -423,7 +425,8 @@ class Stagers(object):
         os.chdir("pkgbuild")
         os.system("cp -r ../"+AppName+".app root/Applications/")
         os.system("chmod +x root/Applications/")
-        os.system("( cd root && find . | cpio -o --format odc --owner 0:80 | gzip -c ) > expand/Payload")
+        subprocess.call("( cd root && find . | cpio -o --format odc --owner 0:80 | gzip -c ) > expand/Payload", shell=True, stderr=subprocess.DEVNULL)
+
         os.system("chmod +x expand/Payload")
         s = open('scripts/postinstall','r+')
         script = s.read()
@@ -431,10 +434,10 @@ class Stagers(object):
         s.seek(0)
         s.write(script)
         s.close()
-        os.system("( cd scripts && find . | cpio -o --format odc --owner 0:80 | gzip -c ) > expand/Scripts")
+        subprocess.call("( cd scripts && find . | cpio -o --format odc --owner 0:80 | gzip -c ) > expand/Scripts", shell=True, stderr=subprocess.DEVNULL)
         os.system("chmod +x expand/Scripts")
-        numFiles = subprocess.check_output("find root | wc -l",shell=True).strip('\n')
-        size = subprocess.check_output("du -b -s root",shell=True).split('\t')[0]
+        numFiles = subprocess.check_output("find root | wc -l",shell=True).strip(b'\n')
+        size = subprocess.check_output("du -b -s root",shell=True).split(b'\t')[0]
         size = old_div(int(size), 1024)
         p = open('expand/PackageInfo','w+')
         pkginfo = """<?xml version="1.0" encoding="utf-8" standalone="no"?>
@@ -461,7 +464,7 @@ class Stagers(object):
 </pkg-info>
 """
         pkginfo = pkginfo.replace('APPNAME',AppName)
-        pkginfo = pkginfo.replace('KEY1',numFiles)
+        pkginfo = pkginfo.replace('KEY1',numFiles.decode('UTF-8'))
         pkginfo = pkginfo.replace('KEY2',str(size))
         p.write(pkginfo)
         p.close()
