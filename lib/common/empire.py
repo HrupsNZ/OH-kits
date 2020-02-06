@@ -968,28 +968,27 @@ class MainMenu(cmd.Cmd):
             
             # Empire Log
             cur.execute("""
-            SELECT
-                reporting.time_stamp
-                ,reporting.event_type
-                ,reporting.name as "AGENT_ID"
-                ,a.hostname
-                ,reporting.taskID
-                ,t.data AS "Task"
-                ,r.data AS "Results"
-            FROM
-                reporting
-                JOIN agents a on reporting.name LIKE '%'+ a.session_id + '%'
-                LEFT OUTER JOIN taskings t on (reporting.taskID = t.id) AND (reporting.name = t.agent)
-                LEFT OUTER JOIN results r on (reporting.taskID = r.id) AND (reporting.name = r.agent)
-            WHERE
-                reporting.event_type == 'task' OR reporting.event_type == 'checkin'
-            """)
+                        SELECT
+                            reporting.time_stamp
+                            ,reporting.event_type
+                            ,reporting.name as "AGENT_ID"
+                            ,a.hostname
+                            ,reporting.taskID
+                            ,t.data AS "Task"
+                            ,r.data AS "Results"
+                        FROM
+                            reporting
+                            JOIN agents a on reporting.name = a.session_id
+                            LEFT OUTER JOIN taskings t on (reporting.taskID = t.id) AND (reporting.name = t.agent)
+                            LEFT OUTER JOIN results r on (reporting.taskID = r.id) AND (reporting.name = r.agent)
+                        WHERE
+                            reporting.event_type == 'task' OR reporting.event_type == 'checkin'
+                        """)
             rows = cur.fetchall()
             print(helpers.color("[*] Writing data/master.log"))
             f = open('data/master.log', 'w')
             f.write('Empire Master Taskings & Results Log by timestamp\n')
             f.write('='*50 + '\n\n')
-            print(rows)
             for row in rows:
                 row = list(row)
                 for n in range(len(row)):
@@ -1371,7 +1370,7 @@ class AgentsMenu(SubMenu):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(sessionID))
+                dispatcher.send(signal, sender="{}".format(sessionID))
                 
                 # update the agent log
                 msg = "Tasked agent to delay sleep/jitter %s/%s" % (delay, jitter)
@@ -1399,7 +1398,7 @@ class AgentsMenu(SubMenu):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(sessionID))
+                dispatcher.send(signal, sender="{}".format(sessionID))
                 
                 # update the agent log
                 msg = "Tasked agent to delay sleep/jitter %s/%s" % (delay, jitter)
@@ -1434,7 +1433,7 @@ class AgentsMenu(SubMenu):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(sessionID))
+                dispatcher.send(signal, sender="{}".format(sessionID))
                 
                 # update the agent log
                 msg = "Tasked agent to change lost limit %s" % (lostLimit)
@@ -1457,7 +1456,7 @@ class AgentsMenu(SubMenu):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(sessionID))
+                dispatcher.send(signal, sender="{}".format(sessionID))
                 
                 # update the agent log
                 msg = "Tasked agent to change lost limit %s" % (lostLimit)
@@ -1493,7 +1492,7 @@ class AgentsMenu(SubMenu):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(sessionID))
+                dispatcher.send(signal, sender="{}".format(sessionID))
                 
                 # update the agent log
                 msg = "Tasked agent to set killdate to " + str(date)
@@ -1516,7 +1515,7 @@ class AgentsMenu(SubMenu):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(sessionID))
+                dispatcher.send(signal, sender="{}".format(sessionID))
                 
                 # update the agent log
                 msg = "Tasked agent to set killdate to " + str(date)
@@ -1553,7 +1552,7 @@ class AgentsMenu(SubMenu):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(sessionID))
+                dispatcher.send(signal, sender="{}".format(sessionID))
                 
                 # update the agent log
                 msg = "Tasked agent to set working hours to %s" % (hours)
@@ -1578,7 +1577,7 @@ class AgentsMenu(SubMenu):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(sessionID))
+                dispatcher.send(signal, sender="{}".format(sessionID))
                 
                 # update the agent log
                 msg = "Tasked agent to set working hours to %s" % (hours)
@@ -1888,7 +1887,7 @@ class PowerShellAgentMenu(SubMenu):
                     'message': message,
                     'command': line
                 })
-                dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+                dispatcher.send(signal, sender="{}".format(self.sessionID))
                 
                 # update the agent log
                 msg = "Tasked agent to run command " + line
@@ -1953,7 +1952,7 @@ class PowerShellAgentMenu(SubMenu):
                     'print': False,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+                dispatcher.send(signal, sender="{}".format(self.sessionID))
                 
                 # update the agent log
                 self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to exit")
@@ -1983,7 +1982,7 @@ class PowerShellAgentMenu(SubMenu):
                     'print': False,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+                dispatcher.send(signal, sender="{}".format(self.sessionID))
                 
                 # update the agent log
                 self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to get running jobs")
@@ -1999,7 +1998,7 @@ class PowerShellAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to stop job " + str(jobID))
@@ -2027,7 +2026,7 @@ class PowerShellAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to delay sleep/jitter " + str(delay) + "/" + str(jitter)
@@ -2051,7 +2050,7 @@ class PowerShellAgentMenu(SubMenu):
             'print': False,
             'message': message
         })
-        dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+        dispatcher.send(signal, sender="{}".format(self.sessionID))
         
         # update the agent log
         msg = "Tasked agent to change lost limit " + str(lostLimit)
@@ -2083,7 +2082,7 @@ class PowerShellAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             msg = "Tasked agent to kill process: " + str(process)
             self.mainMenu.agents.save_agent_log(self.sessionID, msg)
@@ -2104,7 +2103,7 @@ class PowerShellAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to get KillDate")
         
@@ -2121,7 +2120,7 @@ class PowerShellAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to set killdate to " + str(date)
@@ -2143,7 +2142,7 @@ class PowerShellAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to get working hours")
         
@@ -2161,7 +2160,7 @@ class PowerShellAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to set working hours to " + str(hours)
@@ -2183,7 +2182,7 @@ class PowerShellAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to run shell command " + line
@@ -2202,7 +2201,7 @@ class PowerShellAgentMenu(SubMenu):
             'print': False,
             'message': message
         })
-        dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+        dispatcher.send(signal, sender="{}".format(self.sessionID))
         
         # update the agent log
         self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to get system information")
@@ -2222,7 +2221,7 @@ class PowerShellAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to download " + line
@@ -2268,7 +2267,7 @@ class PowerShellAgentMenu(SubMenu):
                         'file_md5': hashlib.md5(file_data).hexdigest(),
                         'file_size': helpers.get_file_size(file_data)
                     })
-                    dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+                    dispatcher.send(signal, sender="{}".format(self.sessionID))
                     
                     # update the agent log
                     msg = "Tasked agent to upload %s : %s" % (parts[0], hashlib.md5(file_data).hexdigest())
@@ -2306,7 +2305,7 @@ class PowerShellAgentMenu(SubMenu):
                 'import_path': path,
                 'import_md5': hashlib.md5(script_data.encode('utf-8')).hexdigest()
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log with the filename and MD5
             msg = "Tasked agent to import %s : %s" % (path, hashlib.md5(script_data.encode('utf-8')).hexdigest())
@@ -2336,7 +2335,7 @@ class PowerShellAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             msg = "[*] Tasked agent %s to run %s" % (self.sessionID, command)
             self.mainMenu.agents.save_agent_log(self.sessionID, msg)
@@ -2399,7 +2398,7 @@ class PowerShellAgentMenu(SubMenu):
                     'print': False,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+                dispatcher.send(signal, sender="{}".format(self.sessionID))
                 
                 # update the agent log
                 msg = "Tasked agent to update profile " + profile
@@ -2865,7 +2864,7 @@ class PythonAgentMenu(SubMenu):
                     'message': message,
                     'command': line
                 })
-                dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+                dispatcher.send(signal, sender="{}".format(self.sessionID))
 
                 # update the agent log
                 msg = "Tasked agent to run command " + line
@@ -2930,7 +2929,7 @@ class PythonAgentMenu(SubMenu):
                     'print': False,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+                dispatcher.send(signal, sender="{}".format(self.sessionID))
                 
                 # update the agent log
                 self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to exit")
@@ -2964,7 +2963,7 @@ class PythonAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to change active directory to: %s" % (line)
@@ -2986,7 +2985,7 @@ class PythonAgentMenu(SubMenu):
                     'print': False,
                     'message': message
                 })
-                dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+                dispatcher.send(signal, sender="{}".format(self.sessionID))
                 
                 # update the agent log
                 self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to get running jobs")
@@ -3002,7 +3001,7 @@ class PythonAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to stop job " + str(jobID))
@@ -3039,7 +3038,7 @@ class PythonAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to display delay/jitter")
         
@@ -3061,7 +3060,7 @@ class PythonAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to delay sleep/jitter " + str(delay) + "/" + str(jitter)
@@ -3084,7 +3083,7 @@ class PythonAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to display lost limit")
         else:
@@ -3100,7 +3099,7 @@ class PythonAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to change lost limit " + str(lostLimit)
@@ -3124,7 +3123,7 @@ class PythonAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to display killDate")
         else:
@@ -3140,7 +3139,7 @@ class PythonAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to set killdate to %s" %(killDate)
@@ -3162,7 +3161,7 @@ class PythonAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to get working hours")
         
@@ -3179,7 +3178,7 @@ class PythonAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to set working hours to: %s" % (hours)
@@ -3201,7 +3200,7 @@ class PythonAgentMenu(SubMenu):
                 'message': message,
                 'command': line
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to run shell command: %s" % (line)
@@ -3223,7 +3222,7 @@ class PythonAgentMenu(SubMenu):
                 'message': message,
                 'command': line
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to run Python command: %s" % (line)
@@ -3252,7 +3251,7 @@ class PythonAgentMenu(SubMenu):
                 # note md5 is after replacements done on \r and \r\n above
                 'script_md5': hashlib.md5(script).hexdigest()
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             #update the agent log
             msg = "[*] Tasked agent to execute python script: "+filename
@@ -3273,7 +3272,7 @@ class PythonAgentMenu(SubMenu):
             'print': False,
             'message': message
         })
-        dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+        dispatcher.send(signal, sender="{}".format(self.sessionID))
         
         # update the agent log
         self.mainMenu.agents.save_agent_log(self.sessionID, "Tasked agent to get system information")
@@ -3294,7 +3293,7 @@ class PythonAgentMenu(SubMenu):
                 'message': message,
                 'download_filename': line
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to download: %s" % (line)
@@ -3355,7 +3354,7 @@ class PythonAgentMenu(SubMenu):
                         'upload_md5': original_md5,
                         'upload_size': helpers.get_file_size(fileData)
                     })
-                    dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+                    dispatcher.send(signal, sender="{}".format(self.sessionID))
                     
                     self.mainMenu.agents.add_agent_task_db(self.sessionID, "TASK_UPLOAD", data)
             else:
@@ -3404,7 +3403,7 @@ class PythonAgentMenu(SubMenu):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             module_menu.do_execute("")
         else:
@@ -3436,7 +3435,7 @@ except Exception as e:
                 'message': message,
                 'file_name': line
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             # update the agent log
             msg = "Tasked agent to cat file %s" % (line)
@@ -3462,7 +3461,7 @@ except Exception as e:
                 'import_path': path,
                 'import_md5': hashlib.md5(module_data).hexdigest()
             })
-            dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+            dispatcher.send(signal, sender="{}".format(self.sessionID))
             
             msg = "Tasked agent to import "+path+" : "+hashlib.md5(module_data).hexdigest()
             self.mainMenu.agents.save_agent_log(self.sessionID, msg)
@@ -3489,7 +3488,7 @@ except Exception as e:
             'message': message,
             'repo_name': repoName
         })
-        dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+        dispatcher.send(signal, sender="{}".format(self.sessionID))
         
         # update the agent log
         msg = "[*] Tasked agent to view repo contents: " + repoName
@@ -3508,7 +3507,7 @@ except Exception as e:
             'message': message,
             'repo_name': repoName
         })
-        dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
+        dispatcher.send(signal, sender="{}".format(self.sessionID))
         
         msg = "[*] Tasked agent to remove repo: "+repoName
         print(helpers.color(msg, color="green"))
@@ -4222,7 +4221,7 @@ class ModuleMenu(SubMenu):
                             'print': True,
                             'message': message
                         })
-                        dispatcher.send(signal, sender="agents/all/{}".format(self.moduleName))
+                        dispatcher.send(signal, sender="all".format(self.moduleName))
                         
                         # actually task the agents
                         for agent in self.mainMenu.agents.get_agents_db():
@@ -4240,7 +4239,7 @@ class ModuleMenu(SubMenu):
                                 'message': message,
                                 'options': self.module.options
                             })
-                            dispatcher.send(signal, sender="agents/{}/{}".format(sessionID, self.moduleName))
+                            dispatcher.send(signal, sender="{}".format(sessionID))
                             msg = "Tasked agent to run module {}".format(self.moduleName)
                             self.mainMenu.agents.save_agent_log(sessionID, msg)
                 
@@ -4272,7 +4271,7 @@ class ModuleMenu(SubMenu):
                         'message': message,
                         'options': self.module.options
                     })
-                    dispatcher.send(signal, sender="agents/{}/{}".format(agentName, self.moduleName))
+                    dispatcher.send(signal, sender="{}".format(agentName))
                     msg = "Tasked agent to run module %s" % (self.moduleName)
                     self.mainMenu.agents.save_agent_log(agentName, msg)
     
