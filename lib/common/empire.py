@@ -959,6 +959,10 @@ class MainMenu(cmd.Cmd):
             f = open('data/credentials.csv','w')
             f.write('Domain, Username, Host, Cred Type, Password\n')
             for row in rows:
+                row = list(row)
+                for n in range(len(row)):
+                    if isinstance(row[n], bytes):
+                        row[n] = row[n].decode('UTF-8')
                 f.write(row[0]+ ','+ row[1]+ ','+ row[2]+ ','+ row[3]+ ','+ row[4]+'\n')
             f.close()
             
@@ -974,7 +978,7 @@ class MainMenu(cmd.Cmd):
                 ,r.data AS "Results"
             FROM
                 reporting
-                JOIN agents a on reporting.name = a.session_id
+                JOIN agents a on reporting.name LIKE '%'+ a.session_id + '%'
                 LEFT OUTER JOIN taskings t on (reporting.taskID = t.id) AND (reporting.name = t.agent)
                 LEFT OUTER JOIN results r on (reporting.taskID = r.id) AND (reporting.name = r.agent)
             WHERE
@@ -985,7 +989,12 @@ class MainMenu(cmd.Cmd):
             f = open('data/master.log', 'w')
             f.write('Empire Master Taskings & Results Log by timestamp\n')
             f.write('='*50 + '\n\n')
+            print(rows)
             for row in rows:
+                row = list(row)
+                for n in range(len(row)):
+                    if isinstance(row[n], bytes):
+                        row[n] = row[n].decode('UTF-8')
                 f.write('\n' + row[0] + ' - ' + row[3] + ' (' + row[2] + ')> ' + str(row[5]) + '\n' + str(row[6]) + '\n')
             f.close()
             cur.close()
