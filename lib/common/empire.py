@@ -968,22 +968,29 @@ class MainMenu(cmd.Cmd):
             
             # Empire Log
             cur.execute("""
-                        SELECT
-                            reporting.time_stamp
-                            ,reporting.event_type
-                            ,reporting.name as "AGENT_ID"
-                            ,a.hostname
-                            ,reporting.taskID
-                            ,t.data AS "Task"
-                            ,r.data AS "Results"
-                        FROM
-                            reporting
-                            JOIN agents a on reporting.name = a.session_id
-                            LEFT OUTER JOIN taskings t on (reporting.taskID = t.id) AND (reporting.name = t.agent)
-                            LEFT OUTER JOIN results r on (reporting.taskID = r.id) AND (reporting.name = r.agent)
-                        WHERE
-                            reporting.event_type == 'task' OR reporting.event_type == 'checkin'
-                        """)
+                SELECT
+                time_stamp,
+                event_type,
+                substr(reporting.name, pos+1) as agent_name,
+                a.hostname,
+                taskID,
+                t.data as "Task",
+                r.data as "Results"
+                FROM
+                (
+                SELECT
+                    time_stamp,
+                    event_type,
+                    name,
+                    instr(name, '/') as pos,
+                    taskID
+                FROM reporting
+                WHERE name LIKE 'agent%'
+                AND reporting.event_type == 'task' OR reporting.event_type == 'checkin') reporting
+                LEFT OUTER JOIN taskings t on (reporting.taskID = t.id) AND (agent_name = t.agent)
+                LEFT OUTER JOIN results r on (reporting.taskID = r.id) AND (agent_name = r.agent)
+                JOIN agents a on agent_name = a.session_id
+            """)
             rows = cur.fetchall()
             print(helpers.color("[*] Writing data/master.log"))
             f = open('data/master.log', 'w')
