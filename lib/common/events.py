@@ -35,8 +35,8 @@ def agent_rename(old_name, new_name):
     # signal twice, once for each name (that way, if you search by sender,
     # the last thing in the old agent and the first thing in the new is that
     # it has been renamed)
-    dispatcher.send(signal, sender="{}".format(old_name))
-    dispatcher.send(signal, sender="{}".format(new_name))
+    dispatcher.send(signal, sender="agents/{}".format(old_name))
+    dispatcher.send(signal, sender="agents/{}".format(new_name))
 
     # TODO rename all events left over using agent's old name?
     # in order to handle "agents/<name>" as well as "agents/<name>/stuff"

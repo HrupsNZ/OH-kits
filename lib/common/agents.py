@@ -171,7 +171,7 @@ class Agents(object):
                 'timestamp': checkinTime,
                 'event_type': 'checkin'
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
             # initialize the tasking/result buffers along with the client session key
             self.agents[sessionID] = {'sessionKey': sessionKey, 'functions': []}
@@ -212,7 +212,7 @@ class Agents(object):
                 'print': True,
                 'message': message
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
         finally:
             self.lock.release()
 
@@ -266,7 +266,7 @@ class Agents(object):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
                 return
 
             # make the recursive directory structure if it doesn't already exist
@@ -291,7 +291,7 @@ class Agents(object):
                         'print': True,
                         'message': message
                     })
-                    dispatcher.send(signal, sender="{}".format(nameid))
+                    dispatcher.send(signal, sender="agents/{}".format(nameid))
                 data = dec_data['data']
 
             f.write(data)
@@ -305,7 +305,7 @@ class Agents(object):
             'print': True,
             'message': message
         })
-        dispatcher.send(signal, sender="{}".format(sessionID))
+        dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
     def save_module_file(self, sessionID, path, data):
         """
@@ -332,7 +332,7 @@ class Agents(object):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(nameid))
+                dispatcher.send(signal, sender="agents/{}".format(nameid))
             data = dec_data['data']
 
         try:
@@ -345,7 +345,7 @@ class Agents(object):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
                 return
 
             # make the recursive directory structure if it doesn't already exist
@@ -366,7 +366,7 @@ class Agents(object):
             'print': True,
             'message': message
         })
-        dispatcher.send(signal, sender="{}".format(sessionID))
+        dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
         return "/downloads/%s/%s/%s" % (sessionID, "/".join(parts[0:-1]), filename)
 
@@ -891,7 +891,7 @@ class Agents(object):
                 'print': True,
                 'message': message
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
 
     def update_agent_sysinfo_db(self, sessionID, listener='', external_ip='', internal_ip='', username='', hostname='', os_details='', high_integrity=0, process_name='', process_id='', language_version='', language=''):
@@ -1077,7 +1077,7 @@ class Agents(object):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
                 conn = self.get_db_connection()
                 try:
@@ -1112,7 +1112,7 @@ class Agents(object):
                         'task': task,
                         'event_type': 'task'
                     })
-                    dispatcher.send(signal, sender="{}".format(sessionID))
+                    dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
                     cur.close()
 
@@ -1223,7 +1223,7 @@ class Agents(object):
             'print': True,
             'message': message
         })
-        dispatcher.send(signal, sender="{}".format(sessionID))
+        dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
 
     ###############################################################
@@ -1252,7 +1252,7 @@ class Agents(object):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
             # decrypt the agent's public key
             try:
@@ -1265,7 +1265,7 @@ class Agents(object):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
                 return 'ERROR: HMAC verification failed'
 
             if language.lower() == 'powershell':
@@ -1279,7 +1279,7 @@ class Agents(object):
                         'print': True,
                         'message': message
                     })
-                    dispatcher.send(signal, sender="{}".format(sessionID))
+                    dispatcher.send(signal, sender="agents/{}".format(sessionID))
                     return 'ERROR: Invalid PowerShell key post format'
                 else:
                     # convert the RSA key from the stupid PowerShell export format
@@ -1291,7 +1291,7 @@ class Agents(object):
                             'print': False,
                             'message': message
                         })
-                        dispatcher.send(signal, sender="{}".format(sessionID))
+                        dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
                         nonce = helpers.random_string(16, charset=string.digits)
                         delay = listenerOptions['DefaultDelay']['Value']
@@ -1321,7 +1321,7 @@ class Agents(object):
                             'print': True,
                             'message': message
                         })
-                        dispatcher.send(signal, sender="{}".format(sessionID))
+                        dispatcher.send(signal, sender="agents/{}".format(sessionID))
                         return 'ERROR: Invalid PowerShell public key'
 
             elif language.lower() == 'python':
@@ -1331,7 +1331,7 @@ class Agents(object):
                         'print': True,
                         'message': message
                     })
-                    dispatcher.send(signal, sender="{}".format(sessionID))
+                    dispatcher.send(signal, sender="agents/{}".format(sessionID))
                     return "Error: Invalid Python key post format from %s" % (sessionID)
                 else:
                     try:
@@ -1342,7 +1342,7 @@ class Agents(object):
                             'print': True,
                             'message': message
                         })
-                        dispatcher.send(signal, sender="{}".format(sessionID))
+                        dispatcher.send(signal, sender="agents/{}".format(sessionID))
                         return "Error: Invalid Python key post format from {}".format(sessionID)
 
                     # client posts PUBc key
@@ -1358,7 +1358,7 @@ class Agents(object):
                         'print': True,
                         'message': message
                     })
-                    dispatcher.send(signal, sender="{}".format(sessionID))
+                    dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
                     delay = listenerOptions['DefaultDelay']['Value']
                     jitter = listenerOptions['DefaultJitter']['Value']
@@ -1383,7 +1383,7 @@ class Agents(object):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
                 return 'ERROR: invalid language: {}'.format(language)
 
         elif meta == 'STAGE2':
@@ -1403,7 +1403,7 @@ class Agents(object):
                         'print': True,
                         'message': message
                     })
-                    dispatcher.send(signal, sender="{}".format(sessionID))
+                    dispatcher.send(signal, sender="agents/{}".format(sessionID))
                     # remove the agent from the cache/database
                     self.mainMenu.agents.remove_agent_db(sessionID)
                     return "ERROR: Agent %s posted invalid sysinfo checkin format: %s" % (sessionID, message)
@@ -1415,7 +1415,7 @@ class Agents(object):
                         'print': True,
                         'message': message
                     })
-                    dispatcher.send(signal, sender="{}".format(sessionID))
+                    dispatcher.send(signal, sender="agents/{}".format(sessionID))
                     # remove the agent from the cache/database
                     self.mainMenu.agents.remove_agent_db(sessionID)
                     return "ERROR: Invalid nonce returned from %s" % (sessionID)
@@ -1425,7 +1425,7 @@ class Agents(object):
                     'print': False,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
                 listener = str(parts[1], 'utf-8')
                 domainname = str(parts[2], 'utf-8')
@@ -1450,7 +1450,7 @@ class Agents(object):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
                 # remove the agent from the cache/database
                 self.mainMenu.agents.remove_agent_db(sessionID)
                 return "Error: Exception in agents.handle_agent_staging() for %s : %s" % (sessionID, e)
@@ -1475,7 +1475,7 @@ class Agents(object):
                 'print': True,
                 'message': message
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
             # save the initial sysinfo information in the agent log
             agent = self.mainMenu.agents.get_agent_db(sessionID)
@@ -1510,7 +1510,7 @@ class Agents(object):
                 'print': True,
                 'message': message
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
     def handle_agent_data(self, stagingKey, routingPacket, listenerOptions, clientIP='0.0.0.0', update_lastseen=True):
         """
@@ -1542,7 +1542,7 @@ class Agents(object):
                     'print': False,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
                 dataToReturn.append((language, self.handle_agent_staging(sessionID, language, meta, additional, encData, stagingKey, listenerOptions, clientIP)))
 
             elif sessionID not in self.agents:
@@ -1551,7 +1551,7 @@ class Agents(object):
                     'print': False,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
                 dataToReturn.append(('', "ERROR: sessionID %s not in cache!" % (sessionID)))
 
             elif meta == 'TASKING_REQUEST':
@@ -1560,7 +1560,7 @@ class Agents(object):
                     'print': False,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
                 dataToReturn.append((language, self.handle_agent_request(sessionID, language, stagingKey)))
 
             elif meta == 'RESULT_POST':
@@ -1569,7 +1569,7 @@ class Agents(object):
                     'print': False,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
                 dataToReturn.append((language, self.handle_agent_response(sessionID, encData, update_lastseen)))
 
             else:
@@ -1578,7 +1578,7 @@ class Agents(object):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
         return dataToReturn
 
 
@@ -1594,7 +1594,7 @@ class Agents(object):
                 'print': True,
                 'message': message
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
             return None
 
         # update the client's last seen time
@@ -1641,7 +1641,7 @@ class Agents(object):
                 'print': True,
                 'message': message
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
             return None
 
         # extract the agent's session key
@@ -1670,7 +1670,7 @@ class Agents(object):
                     'print': False,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
             # return a 200/valid
             return 'VALID'
@@ -1682,7 +1682,7 @@ class Agents(object):
                 'print': True,
                 'message': message
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
             # TODO: stupid concurrency...
             #   when an exception is thrown, something causes the lock to remain locked...
@@ -1717,7 +1717,7 @@ class Agents(object):
                 'task_id': taskID,
                 'event_type': 'result'
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
             # insert task results into the database, if it's not a file
             if taskID != 0 and responseName not in ["TASK_DOWNLOAD", "TASK_CMD_JOB_SAVE", "TASK_CMD_WAIT_SAVE"] and data != None:
@@ -1750,7 +1750,7 @@ class Agents(object):
                 'print': True,
                 'message': message
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
             self.update_agent_results_db(sessionID, data)
             # update the agent log
             self.save_agent_log(sessionID, "[!] Error response: " + data)
@@ -1766,7 +1766,7 @@ class Agents(object):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
             else:
                 # extract appropriate system information
                 listener = parts[1]
@@ -1815,7 +1815,7 @@ class Agents(object):
                 'print': True,
                 'message': message
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
             # update the agent results and log
             # self.update_agent_results(sessionID, data)
@@ -1844,7 +1844,7 @@ class Agents(object):
                     'print': True,
                     'message': message
                 })
-                dispatcher.send(signal, sender="{}".format(sessionID))
+                dispatcher.send(signal, sender="agents/{}".format(sessionID))
             else:
                 index, path, data = parts
                 # decode the file data and save it off as appropriate
@@ -1951,7 +1951,7 @@ class Agents(object):
                         'print': True,
                         'message': message
                     })
-                    dispatcher.send(signal, sender="{}".format(self.sessionID))
+                    dispatcher.send(signal, sender="agents/{}".format(self.sessionID))
                     return
 
                 with open(savePath,"a+") as f:
@@ -2047,7 +2047,7 @@ class Agents(object):
                 'print': True,
                 'message': message
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
         elif responseName == "TASK_UPDATE_LISTENERNAME":
             # The agent listener name variable has been updated agent side
@@ -2059,7 +2059,7 @@ class Agents(object):
                 'print': False,
                 'message': message
             })
-            dispatcher.send(signal, sender="{}".format(sessionID))
+            dispatcher.send(signal, sender="agents/{}".format(sessionID))
 
         else:
             print(helpers.color("[!] Unknown response %s from %s" % (responseName, sessionID)))
