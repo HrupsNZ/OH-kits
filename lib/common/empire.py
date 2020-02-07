@@ -968,7 +968,7 @@ class MainMenu(cmd.Cmd):
             
             # Empire Log
             cur.execute("""
-                SELECT
+            SELECT
                 time_stamp,
                 event_type,
                 substr(reporting.name, pos+1) as agent_name,
@@ -976,8 +976,8 @@ class MainMenu(cmd.Cmd):
                 taskID,
                 t.data as "Task",
                 r.data as "Results"
-                FROM
-                (
+            FROM
+            (
                 SELECT
                     time_stamp,
                     event_type,
@@ -987,9 +987,9 @@ class MainMenu(cmd.Cmd):
                 FROM reporting
                 WHERE name LIKE 'agent%'
                 AND reporting.event_type == 'task' OR reporting.event_type == 'checkin') reporting
-                LEFT OUTER JOIN taskings t on (reporting.taskID = t.id) AND (agent_name = t.agent)
-                LEFT OUTER JOIN results r on (reporting.taskID = r.id) AND (agent_name = r.agent)
-                JOIN agents a on agent_name = a.session_id
+            LEFT OUTER JOIN taskings t on (reporting.taskID = t.id) AND (agent_name = t.agent)
+            LEFT OUTER JOIN results r on (reporting.taskID = r.id) AND (agent_name = r.agent)
+            JOIN agents a on agent_name = a.session_id
             """)
             rows = cur.fetchall()
             print(helpers.color("[*] Writing data/master.log"))
