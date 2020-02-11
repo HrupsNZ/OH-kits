@@ -3312,7 +3312,7 @@ class PythonAgentMenu(SubMenu):
                 # TODO: reimplement Python file upload
                 
                 # # read in the file and base64 encode it for transport
-                f = open(parts[0], 'r')
+                f = open(parts[0], 'rb')
                 fileData = f.read()
                 f.close()
                 # Get file size
@@ -3335,7 +3335,7 @@ class PythonAgentMenu(SubMenu):
                     # get final file size
                     fileData = helpers.encode_base64(fileData)
                     # upload packets -> "filename | script data"
-                    data = uploadname + "|" + fileData
+                    data = uploadname + "|" + str(fileData)
                     
                     # dispatch this event
                     message = "[*] Starting upload of {}, final size {}".format(uploadname, helpers.get_file_size(fileData))
