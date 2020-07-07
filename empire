@@ -941,6 +941,7 @@ def start_restful_api(empireMenu, suppress=False, username=None, password=None, 
                 agentTaskResults.append({"AgentName": agentSessionID, "AgentResults": []})
 
         return jsonify({'results': agentTaskResults})
+
     @app.route('/api/agents/<string:agent_name>/task/<int:task_id>', methods=['GET'])
     def get_task(agent_name, task_id):
         results = execute_db_query(conn, """

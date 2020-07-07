@@ -855,15 +855,15 @@ class Agents(object):
     # Methods to update agent information fields.
     #
     ###############################################################
-    def update_dir_list(self, sessionID, response):
+    def update_dir_list(self, session_id, response):
         """"
         Update the directory list
         """
-        nameid = self.get_agent_id_db(sessionID)
-        if nameid:
-            sessionID = nameid
+        name_id = self.get_agent_id_db(session_id)
+        if name_id:
+            session_id = name_id
 
-        if sessionID in self.agents:
+        if session_id in self.agents:
             conn = self.get_db_connection()
             old_factory = conn.row_factory
             conn.row_factory = sqlite3.Row
@@ -873,29 +873,31 @@ class Agents(object):
 
                 # get existing files/dir that are in this directory.
                 # delete them and their children to keep everything up to date. There's a cascading delete on the table.
-                this_directory = cur.execute("SELECT * FROM file_directory where session_id = ? and path = ?", [sessionID, response['directory_path']]).fetchone()
+                this_directory = cur.execute("SELECT * FROM file_directory where session_id = ? and path = ?",
+                                             [session_id, response['directory_path']]).fetchone()
                 if this_directory:
-                    cur.execute("DELETE FROM file_directory WHERE session_id = ? and parent_id = ?", [sessionID, this_directory['id']])
+                    cur.execute("DELETE FROM file_directory WHERE session_id = ? and parent_id = ?",
+                                [session_id, this_directory['id']])
                 else:  # if the directory doesn't exist we have to create one
                     # parent is None for now even though it might have one. This is self correcting.
-                    # If it's true parent is scraped, then this entry will get rewritted
+                    # If it's true parent is scraped, then this entry will get rewritten
                     cur.execute("INSERT INTO file_directory  ('name', 'path', 'parent_id', 'is_file', 'session_id')VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')"
-                                .format(response['directory_name'], response['directory_path'], None, 0, sessionID))
+                                .format(response['directory_name'], response['directory_path'], None, 0, session_id))
                     this_directory = cur.execute("SELECT * FROM file_directory where session_id = ? and path = ?",
-                                                 [sessionID, response['directory_path']]).fetchone()
+                                                 [session_id, response['directory_path']]).fetchone()
 
                 delete = ""
                 insert = "INSERT INTO file_directory  ('name', 'path', 'parent_id', 'is_file', 'session_id') VALUES "
-                insertArr = []
+                insert_arr = []
                 # insert all the new items
                 for item in response['items']:
                     # Delete it if its already there so that we can be self correcting
-                    delete += f"\nDELETE FROM file_directory WHERE session_id = '{sessionID}' AND path = '{item['path']}';"
-                    insertArr.append(f"('{item['name']}', '{item['path']}', '{None if not this_directory else this_directory['id']}', '{1 if item['is_file'] is True else 0}', '{sessionID}')")
+                    delete += f"\nDELETE FROM file_directory WHERE session_id = '{session_id}' AND path = '{item['path']}';"
+                    insert_arr.append(f"('{item['name']}', '{item['path']}', '{None if not this_directory else this_directory['id']}', '{1 if item['is_file'] is True else 0}', '{session_id}')")
 
-                if len(insertArr) > 0:
+                if len(insert_arr) > 0:
                     cur.executescript(delete)
-                    cur.execute(insert + ','.join(insertArr) + ';')
+                    cur.execute(insert + ','.join(insert_arr) + ';')
                 cur.close()
             finally:
                 conn.row_factory = old_factory
