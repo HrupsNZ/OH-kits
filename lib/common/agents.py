@@ -1783,10 +1783,11 @@ class Agents(object):
                 cur.execute("UPDATE results SET data=? WHERE id=?",(data, taskID))
 
                 try:
-                    keyLogTaskID = cur.execute("SELECT id FROM taskings WHERE agent=? AND data LIKE \"function Get-Keystrokes%\"", [sessionID]).fetchone()[0]
+                    keyLogTaskID = cur.execute("SELECT id FROM taskings WHERE agent=? AND id=? AND data LIKE \"function Get-Keystrokes%\"", [sessionID, taskID]).fetchone()[0]
                 except Exception as e:
                     pass
-                cur.execute("UPDATE results SET data=data||? WHERE id=? AND agent=?", [data, taskID, sessionID])
+                else:
+                    cur.execute("UPDATE results SET data=data||? WHERE id=? AND agent=?", [data, taskID, sessionID])
 
         finally:
             cur.close()
