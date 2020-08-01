@@ -39,7 +39,7 @@ class Module(object):
 
             # List of any references/other comments
             'Comments': [
-                'comment',
+                'Inspired by @IppSec (https://youtu.be/6l4ZIKwzW8U)',
                 'https://github.com/decoder-it/psportfwd'
             ]
         }
