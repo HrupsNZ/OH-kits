@@ -19,6 +19,10 @@ class Module(object):
             # More verbose multi-line description of the module
             'Description': ('Forward a port with no admin rights required.'),
 
+            'Software': '',
+
+            'Techniques': ['T1363'],
+
             # True if the module needs to run in the background
             'Background': True,
 
@@ -138,7 +142,6 @@ class Module(object):
         #   the first method to source it.
         #
         # script += """
-
         scriptEnd = "Invoke-PortFwd"
 
         # Add any arguments to the end execution of the script
@@ -153,5 +156,6 @@ class Module(object):
         if obfuscate:
             scriptEnd = helpers.obfuscate(psScript=scriptEnd, installPath=self.mainMenu.installPath, obfuscationCommand=obfuscationCommand)
         script += scriptEnd
+        script = helpers.keyword_obfuscation(script)
 
         return script
