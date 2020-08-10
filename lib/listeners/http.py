@@ -1012,16 +1012,7 @@ def send_message(packets=None):
             
             static_dir = self.mainMenu.installPath + "data/misc/"
             return make_response(self.index_page(), 200)
-        
-        @app.route('/welcome.png')
-        def serve_index_helper():
-            """
-            Serves image loaded by index page.
-            """
-            
-            static_dir = self.mainMenu.installPath + "data/misc/"
-            return send_from_directory(static_dir, 'welcome.png')
-        
+               
         @app.route('/<path:request_uri>', methods=['GET'])
         def handle_get(request_uri):
             """
@@ -1030,6 +1021,14 @@ def send_message(packets=None):
             This is used during the first step of the staging process,
             and when the agent requests taskings.
             """
+            if request_uri.lower() == 'welcome.png':
+                # Serves image loaded by index page.
+                #
+                # Thanks to making it case-insensitive it works the same way as in 
+                # an actual IIS server
+                static_dir = self.mainMenu.installPath + "data/misc/"
+                return send_from_directory(static_dir, 'welcome.png')
+
             clientIP = request.remote_addr
             
             listenerName = self.options['Name']['Value']
