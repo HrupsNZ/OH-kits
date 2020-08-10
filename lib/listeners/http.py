@@ -15,6 +15,7 @@ from builtins import object
 from builtins import str
 
 from flask import Flask, request, make_response, send_from_directory
+from werkzeug.serving import WSGIRequestHandler
 from pydispatch import dispatcher
 
 from lib.common import bypasses
@@ -202,10 +203,10 @@ class Listener(object):
             '<style type="text/css">',
             '<!--',
             'body{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:#EEEEEE;}',
-            'fieldset{padding:0 15px 10px 15px;}',
+            'fieldset{padding:0 15px 10px 15px;} ',
             'h1{font-size:2.4em;margin:0;color:#FFF;}',
-            'h2{font-size:1.7em;margin:0;color:#CC0000;}',
-            'h3{font-size:1.2em;margin:10px 0 0 0;color:#000000;}',
+            'h2{font-size:1.7em;margin:0;color:#CC0000;} ',
+            'h3{font-size:1.2em;margin:10px 0 0 0;color:#000000;} ',
             '#header{width:96%;margin:0 0 0 0;padding:6px 2% 6px 2%;font-family:"trebuchet MS", Verdana, sans-serif;color:#FFF;',
             'background-color:#555555;}',
             '#content{margin:0 0 0 2%;position:relative;}',
@@ -240,10 +241,10 @@ class Listener(object):
             '<style type="text/css">',
             '<!--',
             'body{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:#EEEEEE;}',
-            'fieldset{padding:0 15px 10px 15px;}',
+            'fieldset{padding:0 15px 10px 15px;} ',
             'h1{font-size:2.4em;margin:0;color:#FFF;}',
-            'h2{font-size:1.7em;margin:0;color:#CC0000;}',
-            'h3{font-size:1.2em;margin:10px 0 0 0;color:#000000;}',
+            'h2{font-size:1.7em;margin:0;color:#CC0000;} ',
+            'h3{font-size:1.2em;margin:10px 0 0 0;color:#000000;} ',
             '#header{width:96%;margin:0 0 0 0;padding:6px 2% 6px 2%;font-family:"trebuchet MS", Verdana, sans-serif;color:#FFF;',
             'background-color:#555555;}',
             '#content{margin:0 0 0 2%;position:relative;}',
@@ -277,16 +278,16 @@ class Listener(object):
             '<style type="text/css">',
             '<!--',
             'body {',
-            '    color:#000000;',
-            '    background-color:#B3B3B3;',
-            '    margin:0;',
+            '	color:#000000;',
+            '	background-color:#B3B3B3;',
+            '	margin:0;',
             '}',
             '',
             '#container {',
-            '    margin-left:auto;',
-            '    margin-right:auto;',
-            '    text-align:center;',
-            '    }',
+            '	margin-left:auto;',
+            '	margin-right:auto;',
+            '	text-align:center;',
+            '	}',
             '',
             'a img {',
             '    border:none;',
@@ -993,6 +994,9 @@ def send_message(packets=None):
         app = Flask(__name__)
         self.app = app
         
+        # Set HTTP/1.1 as in IIS 7.5 instead of /1.0
+        WSGIRequestHandler.protocol_version = "HTTP/1.1"
+
         @app.route('/download/<stager>')
         def send_stager(stager):
             if 'po' in stager:
@@ -1174,7 +1178,7 @@ def send_message(packets=None):
                     'message': message
                 })
                 dispatcher.send(signal, sender="listeners/http/{}".format(listenerName))
-                return make_response(self.default_response(), 200)
+                return make_response(self.default_response(), 404)
         
         @app.route('/<path:request_uri>', methods=['POST'])
         def handle_post(request_uri):
