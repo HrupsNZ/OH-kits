@@ -1052,7 +1052,7 @@ def send_message(packets=None):
             return make_response(self.method_not_allowed_page(), 405)
 
         @app.route('/')
-        @app.route('/index.html')
+        @app.route('/iisstart.htm')
         def serve_index():
             """
             Return default server web page if user navigates to index.

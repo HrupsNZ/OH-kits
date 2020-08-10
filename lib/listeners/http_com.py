@@ -250,19 +250,19 @@ class Listener(object):
             '<style type="text/css">',
             '<!--',
             'body {',
-            '    color:#000000;',
-            '    background-color:#B3B3B3;',
-            '    margin:0;',
+            '	color:#000000;',
+            '	background-color:#B3B3B3;',
+            '	margin:0;',
             '}',
             '',
             '#container {',
-            '    margin-left:auto;',
-            '    margin-right:auto;',
-            '    text-align:center;',
-            '    }',
+            '	margin-left:auto;',
+            '	margin-right:auto;',
+            '	 text-align:center;',
+            '	}',
             '',
             'a img {',
-            '    border:none;',
+            '	border:none;',
             '}',
             '',
             '-->',
@@ -739,7 +739,7 @@ class Listener(object):
             return make_response(self.method_not_allowed_page(), 405)
 
         @app.route('/')
-        @app.route('/index.html')
+        @app.route('/iisstart.htm')
         def serve_index():
             """
             Return default server web page if user navigates to index.
