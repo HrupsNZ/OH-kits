@@ -37,7 +37,7 @@ The following operating systems have been tested for Empire compatibility. We wi
 
 __Note:__ Newer versions of Kali require you to run ```sudo``` before starting Empire.
 
-Beginning with Empire 3.5.0, we recommend the use of [Poetry](todo link) to run Empire. Poetry is a dependency and virtual environment management tool.
+Beginning with Empire 3.5.0, we recommend the use of [Poetry](todo link) or the Docker images to run Empire. Poetry is a dependency and virtual environment management tool.
 This is highly recommended if using the SocketIO notification feature introduced in 3.5.0.
 ```sh
 # once Poetry is installed:
