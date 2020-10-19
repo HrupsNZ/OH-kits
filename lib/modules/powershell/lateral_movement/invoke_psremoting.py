@@ -139,7 +139,7 @@ class Module(object):
         if (self.options['AMSIBypass2']['Value']).lower() == 'true':
             AMSIBypass2 = True
 
-        script = """Invoke-Command """
+        script = """Invoke-Command -AsJob"""
 
         # if a credential ID is specified, try to parse
         credID = self.options["CredID"]['Value']
