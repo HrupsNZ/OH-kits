@@ -21,7 +21,7 @@ class Module(object):
 
             'Techniques': ['T1028'],
 
-            'Background' : False,
+            'Background' : True,
 
             'OutputExtension' : None,
             
@@ -139,7 +139,7 @@ class Module(object):
         if (self.options['AMSIBypass2']['Value']).lower() == 'true':
             AMSIBypass2 = True
 
-        script = """Invoke-Command -AsJob"""
+        script = """Invoke-Command"""
 
         # if a credential ID is specified, try to parse
         credID = self.options["CredID"]['Value']
