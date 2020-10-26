@@ -5,12 +5,15 @@ from __future__ import print_function
 import hashlib
 import os
 import random
-import sqlite3
 import string
 from builtins import input
 from builtins import range
+from datetime import datetime
 
 import bcrypt
+from peewee import SqliteDatabase
+
+from data.models import Config, Agents, Listeners, Credentials, Taskings, Results, Reporting, Users, Functions, FileDirectory
 
 ###################################################
 #
@@ -59,160 +62,61 @@ OBFUSCATE = 0
 
 # default obfuscation command
 OBFUSCATE_COMMAND = r'Token\All\1'
-###################################################
-#
-# Database setup.
-#
-###################################################
 
-conn = sqlite3.connect('%s/data/empire.db' % INSTALL_PATH)
+db = SqliteDatabase('%s/data/empire.db' % INSTALL_PATH)
+db.connect()
 
-c = conn.cursor()
 
-# try to prevent some of the weird sqlite I/O errors
-c.execute('PRAGMA journal_mode = OFF')
+db.create_tables([Config, Agents, Listeners, Credentials, Taskings, Results, Reporting, Users, Functions, FileDirectory])
 
-c.execute('DROP TABLE IF EXISTS config')
-c.execute('''CREATE TABLE config (
-    "staging_key" text,
-    "install_path" text,
-    "ip_whitelist" text,
-    "ip_blacklist" text,
-    "autorun_command" text,
-    "autorun_data" text,
-    "rootuser" boolean,
-    "obfuscate" integer,
-    "obfuscate_command" text
-    )''')
 
-# kick off the config component of the database
-c.execute("INSERT INTO config VALUES (?,?,?,?,?,?,?,?,?)",
-          (STAGING_KEY, INSTALL_PATH, IP_WHITELIST, IP_BLACKLIST, '', '', False, OBFUSCATE, OBFUSCATE_COMMAND))
+# todo remove debug prints
+from playhouse.reflection import print_table_sql
+print_table_sql(Users)
+print_table_sql(Config)
+print_table_sql(Agents)
+print_table_sql(Listeners)
+print_table_sql(Credentials)
+print_table_sql(Taskings)
+print_table_sql(Results)
+print_table_sql(Reporting)
+print_table_sql(Users)
+print_table_sql(Functions)
+print_table_sql(FileDirectory)
 
-c.execute('''CREATE TABLE "agents" (
-    "id" integer PRIMARY KEY,
-    "session_id" text,
-    "listener" text,
-    "name" text,
-    "language" text,
-    "language_version" text,
-    "delay" integer,
-    "jitter" real,
-    "external_ip" text,
-    "internal_ip" text,
-    "username" text,
-    "high_integrity" integer,
-    "process_name" text,
-    "process_id" text,
-    "hostname" text,
-    "os_details" text,
-    "session_key" text,
-    "nonce" text,
-    "checkin_time" timestamp,
-    "lastseen_time" timestamp,
-    "parent" text,
-    "children" text,
-    "servers" text,
-    "profile" text,
-    "functions" text,
-    "kill_date" text,
-    "working_hours" text,
-    "lost_limit" integer,
-    "taskings" text,
-    "results" text
-    )''')
 
-# the 'options' field contains a pickled version of all
-#   currently set listener options
-c.execute('''CREATE TABLE "listeners" (
-    "id" integer PRIMARY KEY,
-    "name" text,
-    "module" text,
-    "listener_type" text,
-    "listener_category" text,
-    "enabled" boolean,
-    "options" blob,
-    "created_at" timestamp
-    )''')
+Config.create(
+    staging_key=STAGING_KEY,
+    install_path=INSTALL_PATH,
+    ip_whitelist=IP_WHITELIST,
+    ip_blacklist=IP_BLACKLIST,
+    autorun_command='',
+    autorun_data='',
+    rootuser=False,
+    obfuscate=OBFUSCATE,
+    obfuscate_command=OBFUSCATE_COMMAND
+)
 
-# type = hash, plaintext, token
-#   for krbtgt, the domain SID is stored in misc
-#   for tokens, the data is base64'ed and stored in pass
-c.execute('''CREATE TABLE "credentials" (
-    "id" integer PRIMARY KEY,
-    "credtype" text,
-    "domain" text,
-    "username" text,
-    "password" text,
-    "host" text,
-    "os" text,
-    "sid" text,
-    "notes" text
-    )''')
 
-c.execute('''CREATE TABLE "taskings" (
-    "id" integer,
-    "data" text,
-    "agent" text,
-    "user_id" text,
-    "timestamp" timestamp,
-    "module_name" text,
-    PRIMARY KEY(id, agent)
-)''')
+Users.create(
+    id="1",
+    username=API_USERNAME,
+    password=API_PASSWORD,
+    api_token="",
+    last_logon_time=datetime.today(),
+    enabled=True,
+    admin=True
+)
 
-c.execute('''CREATE TABLE "results" (
-    "id" integer,
-    "data" text,
-    "agent" text,
-    "user_id" text,
-    PRIMARY KEY(id, agent)
-)''')
-
-# event_types -> checkin, task, result, rename
-c.execute('''CREATE TABLE "reporting" (
-    "id" integer PRIMARY KEY,
-    "name" text,
-    "event_type" text,
-    "message" text,
-    "timestamp" timestamp,
-    "taskID" integer,
-    FOREIGN KEY(taskID) REFERENCES results(id)
-)''')
-
-c.execute('''CREATE TABLE "users" (
-    "id" integer PRIMARY KEY,
-    "username" text unique,
-    "password" text,
-    "api_token" text,
-    "last_logon_time" timestamp,
-    "enabled" boolean,
-    "admin" boolean
-)''')
-
-c.execute("INSERT INTO users VALUES (?,?,?,?,?,?,?)", ("1", API_USERNAME, API_PASSWORD, "", "", True, True))
-
-c.execute('''CREATE TABLE "functions" (
-    "Keyword" text,
-    "Replacement" text 
-)''')
 
 rand1 = random.choice(string.ascii_uppercase) + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
 rand2 = random.choice(string.ascii_uppercase) + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
-c.execute("INSERT INTO functions VALUES(?,?)", ('Invoke-Mimikatz', rand1))
-c.execute("INSERT INTO functions VALUES(?,?)", ('Invoke-Empire', rand2))
+Functions.create(Keyword='Invoke-Mimikatz', Replacement=rand1)
+Functions.create(Keyword='Invoke-Empire', Replacement=rand2)
 
-c.execute('''CREATE TABLE "file_directory" (
-    "id" INTEGER PRIMARY KEY,
-    "session_id" TEXT,
-    "name" TEXT,
-    "path" TEXT,
-    "parent_id" INTEGER NULLABLE,
-    "is_file" boolean,
-    FOREIGN KEY (parent_id) REFERENCES file_directory(id) ON DELETE CASCADE
-);''')
 
 # commit the changes and close everything off
-conn.commit()
-conn.close()
+db.commit()
+db.close()
 
 print("\n [*] Database setup completed!\n")

@@ -44,6 +44,9 @@ from __future__ import print_function
 import json
 
 from future import standard_library
+from peewee import SqliteDatabase
+
+from data.models import Config
 
 standard_library.install_aliases()
 from builtins import str
@@ -596,6 +599,21 @@ def parse_mimikatz(data):
 # Miscellaneous methods (formatting, sorting, etc.)
 #
 ###############################################################
+# todo correct place in file?
+def execute_select_one(model, *fields):
+    """
+    param model `peewee.model`: Model to execute query on
+    param *fields `List[str]`: List of strings representing fields to retrieve
+
+    returns `List[Any]`: List of fields returned from Model
+    """
+    # Get model Field (Ex, `Config.staging_key: TextField()`)
+    params = [getattr(model, f) for f in fields]  # todo error handling
+    # Exec Find one
+    res = model.select(*params).first()
+    # get value for each field on result
+    return [getattr(res, f) for f in fields]  # todo error handling
+
 
 def get_config(fields):
     """
@@ -606,23 +624,23 @@ def get_config(fields):
         i.e. 'version,install_path'
     """
 
-    conn = sqlite3.connect('./data/empire.db', check_same_thread=False)
-    conn.isolation_level = None
-
-    cur = conn.cursor()
+    # conn = sqlite3.connect('./data/empire.db', check_same_thread=False)
+    # conn.isolation_level = None
+    #
+    # cur = conn.cursor()
 
     # Check if there is a new field not in the database
-    columns = [i[1] for i in cur.execute('PRAGMA table_info(config)')]
-    for field in fields.split(','):
-        if field.strip() not in columns:
-            cur.execute("ALTER TABLE config ADD COLUMN %s BLOB" % (field))
+    # columns = [i[1] for i in cur.execute('PRAGMA table_info(config)')]
+    # for field in fields.split(','):
+    #     if field.strip() not in columns:
+    #         cur.execute("ALTER TABLE config ADD COLUMN %s BLOB" % (field))
 
-    cur.execute("SELECT %s FROM config" % (fields))
-    results = cur.fetchone()
-    cur.close()
-    conn.close()
+    # cur.execute("SELECT %s FROM config" % (fields))
+    # results = cur.fetchone()
+    # cur.close()
+    # conn.close()
 
-    return results
+    return execute_select_one(Config, *[f.strip() for f in fields.split(',')])
 
 
 def get_listener_options(listenerName):

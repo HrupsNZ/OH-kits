@@ -24,6 +24,7 @@ from flask.json import JSONEncoder
 from flask_socketio import SocketIO, emit
 
 # Empire imports
+from data.models import db, Config, Listeners, Agents
 from lib.common import empire, helpers, users
 from lib.common.empire import MainMenu
 
@@ -103,14 +104,22 @@ def execute_db_query(conn, query, args=None):
     Execute the supplied query on the provided db conn object
     with optional args for a paramaterized query.
     """
-    cur = conn.cursor()
+    # cur = conn.cursor()
+    # if args:
+    #     cur.execute(query, args)
+    # else:
+    #     cur.execute(query)
+    # results = cur.fetchall()
+    # cur.close()
+
+    # todo I think execute_sql expects a tuple, but we're sending a list
     if args:
-        cur.execute(query, args)
+        cur = db.execute_sql(query, args)
     else:
-        cur.execute(query)
-    results = cur.fetchall()
+        cur = db.execute_sql(query)
+    result = [res for res in cur.fetchall()]
     cur.close()
-    return results
+    return result
 
 ####################################################################
 #
@@ -294,11 +303,20 @@ def start_restful_api(empireMenu: MainMenu, suppress=False, username=None, passw
         """
         api_username = g.user['username']
         api_current_token = g.user['api_token']
-        configRaw = execute_db_query(conn, 'SELECT staging_key, install_path, ip_whitelist, ip_blacklist, autorun_command, autorun_data, rootuser FROM config')
+        config = Config.first()
 
-        [staging_key, install_path, ip_whitelist, ip_blacklist, autorun_command, autorun_data, rootuser] = configRaw[0]
-        config = [{"api_username":api_username, "autorun_command":autorun_command, "autorun_data":autorun_data, "current_api_token":api_current_token, "install_path":install_path, "ip_blacklist":ip_blacklist, "ip_whitelist":ip_whitelist, "staging_key":staging_key, "version":empire.VERSION}]
-        return jsonify({'config': config})
+        res = [{
+            "api_username": api_username,
+            "autorun_command": config.autorun_command,
+            "autorun_data": config.autorun_data,
+            "current_api_token": api_current_token,
+            "install_path": config.install_path,
+            "ip_blacklist": config.ip_blacklist,
+            "ip_whitelist": config.ip_whitelist,
+            "staging_key": config.staging_key,
+            "version": empire.VERSION
+        }]
+        return jsonify({'config': res})
 
     @app.route('/api/stagers', methods=['GET'])
     def get_stagers():
@@ -652,15 +670,13 @@ def start_restful_api(empireMenu: MainMenu, suppress=False, username=None, passw
         """
         Returns JSON describing all currently registered listeners.
         """
-        activeListenersRaw = execute_db_query(conn,
-                                              'SELECT id, name, module, listener_type, listener_category, options, created_at FROM listeners')
+        cur = Listeners.select()
         listeners = []
 
-        for activeListener in activeListenersRaw:
-            [ID, name, module, listener_type, listener_category, options, created_at] = activeListener
-            listeners.append({'ID': ID, 'name': name, 'module': module, 'listener_type': listener_type,
-                              'listener_category': listener_category, 'options': pickle.loads(options),
-                              'created_at': created_at})
+        for listener in cur:
+            listeners.append({'ID': listener.id, 'name': listener.name, 'module': listener.module,
+                              'listener_type': listener.listener_type, 'listener_category': listener.listener_category,
+                              'options': pickle.loads(listener.options), 'created_at': listener.created_at})
 
         return jsonify({'listeners': listeners})
 
@@ -669,17 +685,14 @@ def start_restful_api(empireMenu: MainMenu, suppress=False, username=None, passw
         """
         Returns JSON describing the listener specified by listener_name.
         """
-        activeListenersRaw = execute_db_query(conn,
-                                              'SELECT id, name, module, listener_type, listener_category, options FROM listeners WHERE name=?',
-                                              [listener_name])
+        cur = Listeners.select().where(Listeners.name == listener_name)
         listeners = []
 
         # if listener_name != "" and main.listeners.is_listener_valid(listener_name):
-        for activeListener in activeListenersRaw:
-            [ID, name, module, listener_type, listener_category, options] = activeListener
-            if name == listener_name:
-                listeners.append({'ID': ID, 'name': name, 'module': module, 'listener_type': listener_type,
-                                  'listener_category': listener_category, 'options': pickle.loads(activeListener[5])})
+        for listener in cur:
+            listeners.append({'ID': listener.id, 'name': listener.name, 'module': listener.module,
+                              'listener_type': listener.listener_type, 'listener_category': listener.listener_category,
+                              'options': pickle.loads(listener.options)})
 
             return jsonify({'listeners': listeners})
         else:
@@ -692,9 +705,8 @@ def start_restful_api(empireMenu: MainMenu, suppress=False, username=None, passw
         """
         if listener_name.lower() == "all":
             activeListenersRaw = execute_db_query(conn, 'SELECT id, name, module, listener_type, listener_category, options FROM listeners')
-            for activeListener in activeListenersRaw:
-                [ID, name, module, listener_type, listener_category, options] = activeListener
-                main.listeners.kill_listener(name)
+            for listener in Listeners.select():
+                main.listeners.kill_listener(listener.name)
 
             return jsonify({'success': True})
         else:
