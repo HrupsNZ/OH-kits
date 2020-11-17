@@ -1109,7 +1109,8 @@ class Listener(object):
 
                 # ==== DECODE RESPONSE ====
                 sendMessage += "\n".join(["        " + _ for _ in profile.get.server.output.generate_python_r("data").split("\n")]) + "\n"
-
+                # before return we encode to bytes, since in some transformations "join" produces str
+                sendMessage += "        if isinstance(data,str): data = data.encode('latin-1')\n"
                 sendMessage += "        return ('200', data)\n"
 
                 # ==== HANDLE ERROR ====
