@@ -73,22 +73,8 @@ function install_powershell() {
 	elif lsb_release -d 2>/dev/null | grep -q "Kali"; then
 		apt update && apt -y install powershell
 
-	# Fedora
-	elif grep "Fedora release" /etc/redhat-release 2>/dev/null; then
-		# Register the Microsoft signature key
-		sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-
-		# Register the Microsoft RedHat repository
-		curl https://packages.microsoft.com/config/rhel/7/prod.repo | sudo tee /etc/yum.repos.d/microsoft.repo
-
-		# Update the list of products
-		sudo dnf check-update
-
-		# Install a system component
-		sudo dnf install -y compat-openssl10
-
-		# Install PowerShell
-		sudo dnf install -y powershell
+	else
+		echo 'Unsupported OS. Exiting.' && exit
 	fi
 
 	# Disable telemetry
