@@ -1,3 +1,29 @@
+2/5/2021
+------------
+- Version 3.7.2 Master Release
+        - Fixed Malleable C2 issue where netbios/netbiosu transformations used excessive resources (@Cx01N)
+        - Fixed error when loading http_hop listener options (@Cx01N)
+
+1/27/2021
+------------
+- Version 3.7.1 Master Release
+        - Added Kali message to main menu
+
+1/18/2021
+------------
+- Version 3.7.0 Master Release
+        - Revamped backend database from direct sqlite3 to SQLAlchemy (@Cx01N, @Vinnybod)
+        - Added new Empire CLI to packaging (@Vinnybod)
+        - Added malleable C2 profiles to empire directory: /data/profiles (@Cx01N)
+        - Added --teamserver option to launcher (@Cx01N)
+        - Added support for logging into Empire from multiple locations (@Vinnybod)
+        - Added Invoke-WireTap (@Cx01N)
+        - Added Invoke-SauronEye (@Cx01N)
+        - Added Invoke-SharpLoginPrompt (@Cx01N)
+        - Fixed OneDrive Listener with new database (@Cx01N)
+        - Removed need to run setup database script (@Vinnybod)
+        - Updated docker image to use the locked dependencies in pyproject.toml (@Vinnybod)
+
 12/18/2020
 ------------
 - Version 3.6.3 Master Release
