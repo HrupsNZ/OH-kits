@@ -135,10 +135,10 @@ class Module(object):
             script = "Get-WmiObject __eventFilter -namespace root\subscription -filter \"name='" + subName + "'\"| Remove-WmiObject;"
             script += "Get-WmiObject CommandLineEventConsumer -Namespace root\subscription -filter \"name='" + subName + "'\" | Remove-WmiObject;"
             script += "Get-WmiObject __FilterToConsumerBinding -Namespace root\subscription | Where-Object { $_.filter -match '" + subName + "'} | Remove-WmiObject;"
-            script += "'WMI persistence removed.'"
+            script += "'WMI persistence with subscriction named " + subName + " removed.'"
             script = helpers.keyword_obfuscation(script)
-        if obfuscate:
-            script = helpers.obfuscate(self.mainMenu.installPath, psScript=script, obfuscationCommand=obfuscationCommand)
+            if obfuscate:
+                script = helpers.obfuscate(self.mainMenu.installPath, psScript=script, obfuscationCommand=obfuscationCommand)
             return script
 
         if extFile != '':
