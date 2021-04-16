@@ -170,21 +170,18 @@ class Module(object):
                 statusMsg += "using external file " + extFile
 
             else:
-                print()
-                helpers.color("[!] File does not exist: " + extFile)
+                print(helpers.color("[!] File does not exist: " + extFile))
                 return ""
 
         else:
             if listenerName == "":
-                print()
-                helpers.color("[!] Either an ExtFile or a Listener must be specified")
+                print(helpers.color("[!] Either an ExtFile or a Listener must be specified"))
                 return ""
 
             # if an external file isn't specified, use a listener
             elif not self.mainMenu.listeners.is_listener_valid(listenerName):
                 # not a valid listener, return nothing for the script
-                print()
-                helpers.color("[!] Invalid listener: " + listenerName)
+                print(helpers.color("[!] Invalid listener: " + listenerName))
                 return ""
 
             else:
@@ -198,8 +195,7 @@ class Module(object):
 
         # sanity check to make sure we haven't exceeded the powershell -enc 8190 char max
         if len(encScript) > 8190:
-            print()
-            helpers.color("[!] Warning: -enc command exceeds the maximum of 8190 characters.")
+            print(helpers.color("[!] Warning: -enc command exceeds the maximum of 8190 characters."))
             return ""
 
         # built the command that will be triggered
@@ -220,8 +216,7 @@ class Module(object):
             parts = dailyTime.split(":")
 
             if len(parts) < 2:
-                print()
-                helpers.color("[!] Please use HH:mm format for DailyTime")
+                print(helpers.color("[!] Please use HH:mm format for DailyTime"))
                 return ""
 
             hour = parts[0]
@@ -234,23 +229,20 @@ class Module(object):
 
             # if those day and dayOfWeek are combined, return nothing for the script
             if (day != '' and dayOfWeek != ''):
-                print()
-                helpers.color("[!] Can not combine Day and DayOfWeek")
+                print(helpers.color("[!] Can not combine Day and DayOfWeek"))
                 return ""
 
             # add day or dayOfWeek to event filter
             if day != '':
                 if (int(day) < 1) or (int(day) > 31):
-                    print()
-                    helpers.color("[!] Please stick to range 1-31 for Day")
+                    print(helpers.color("[!] Please stick to range 1-31 for Day"))
                     return ""
                 dayFilter = " AND TargetInstance.Day = " + day
                 statusMsgDay = " every day of month: " + day + " (1-31)"
 
             elif dayOfWeek != '':
                 if (int(dayOfWeek) < 0) or (int(dayOfWeek) > 6):
-                    print()
-                    helpers.color("[!] Please stick to range 0-6 for DayOfWeek")
+                    print(helpers.color("[!] Please stick to range 0-6 for DayOfWeek"))
                     return ""
                 dayFilter = " AND TargetInstance.DayOfWeek=" + dayOfWeek
                 statusMsgDay = " every day of week: " + dayOfWeek + " (0-6)"
