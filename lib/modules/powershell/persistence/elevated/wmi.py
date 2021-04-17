@@ -237,17 +237,17 @@ class Module(object):
                 if (int(day) < 1) or (int(day) > 31):
                     print(helpers.color("[!] Please stick to range 1-31 for Day"))
                     return ""
-                dayFilter = " AND TargetInstance.Day = " + day
+                dayFilter = " AND (TargetInstance.Day = " + day + ")"
                 statusMsgDay = " every day of month: " + day + " (1-31)"
 
             elif dayOfWeek != '':
                 if (int(dayOfWeek) < 0) or (int(dayOfWeek) > 6):
                     print(helpers.color("[!] Please stick to range 0-6 for DayOfWeek"))
                     return ""
-                dayFilter = " AND TargetInstance.DayOfWeek=" + dayOfWeek
+                dayFilter = " AND (TargetInstance.DayOfWeek=" + dayOfWeek + ")"
                 statusMsgDay = " every day of week: " + dayOfWeek + " (0-6)"
                 # creating and bind a dummy WMI event filter with a "nop event consumer" as workaround for win32_localtime.DayOfWeek bug
-                dayFilterDummy = " AND (TargetInstance.DayOfWeek=" + dayOfWeek +" OR TargetInstance.DayOfWeek=" + str((int(dayOfWeek)+1)%7) + ")"
+                dayFilterDummy = " AND (TargetInstance.DayOfWeek=" + dayOfWeek +" OR TargetInstance.DayOfWeek=" + str(int(dayOfWeek)+1) + ")"
                 script += "$Filter=Set-WmiInstance -Class __EventFilter -Namespace \"root\\subscription\" -Arguments @{name='" + dummySubName + "';EventNameSpace='root\CimV2';QueryLanguage=\"WQL\";Query=\"SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_LocalTime'" + dayFilterDummy + " AND (TargetInstance.Hour = " + hour + ") AND (TargetInstance.Minute = " + minutes + ") GROUP WITHIN 60\"};"
                 script += "$Consumer=Set-WmiInstance -Namespace \"root\\subscription\" -Class 'CommandLineEventConsumer' -Arguments @{ name='" + dummySubName + "';CommandLineTemplate=\"call\";RunInteractively='false'};"
                 script += " Set-WmiInstance -Namespace \"root\subscription\" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null;"
