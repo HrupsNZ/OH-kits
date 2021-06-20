@@ -35,8 +35,9 @@ class Module(object):
             'MinLanguageVersion' : '2',
             
             'Comments': [
-                'http://clymb3r.wordpress.com/',
-                'http://blog.gentilkiwi.com'
+                'http://blog.gentilkiwi.com',
+                'https://www.n00py.io/2021/05/dumping-plaintext-rdp-credentials-from-svchost-exe/',
+                'https://pentestlab.blog/2021/05/24/dumping-rdp-credentials/'
             ]
         }
 
