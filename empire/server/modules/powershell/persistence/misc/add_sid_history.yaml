@@ -26,7 +26,11 @@ options:
     required: true
     value: ''
   - name: Groups
-    description: Groups/users to add to the sidhistory of the target user (COMMA-separated).
+    description: Group/user to add to the sidhistory of the target user.
+    required: true
+    value: ''
+  - name: ComputerName
+    description: Host to execute the module on
     required: true
     value: ''
 advanced:
