@@ -49,7 +49,7 @@ options:
     required: false
     value: ''
   - name: DayOfWeek
-    description: Day of week to trigger the script (0-6). Optional to DailyTime.
+    description: Day of week to trigger the script (0-6). Sunday = 0. Optional to DailyTime.
     required: false
     value: ''
   - name: AtStartup
