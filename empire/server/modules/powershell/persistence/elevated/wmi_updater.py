@@ -87,8 +87,7 @@ class Module(object):
             parts = daily_time.split(":")
 
             if len(parts) < 2:
-                print(helpers.color("[!] Please use HH:mm format for DailyTime"))
-                return ""
+                return handle_error_message("[!] Please use HH:mm format for DailyTime")
 
             hour = parts[0]
             minutes = parts[1]
@@ -100,21 +99,18 @@ class Module(object):
 
             # if those day and day_of_week are combined, return nothing for the script
             if (day != '' and day_of_week != ''):
-                print(helpers.color("[!] Can not combine Day and DayOfWeek"))
-                return ""
+                return handle_error_message("[!] Can not combine Day and DayOfWeek")
 
             # add day or day_of_week to event filter
             if day != '':
                 if (int(day) < 1) or (int(day) > 31):
-                    print(helpers.color("[!] Please stick to range 1-31 for Day"))
-                    return ""
+                    return handle_error_message("[!] Please stick to range 1-31 for Day")
                 day_filter = " AND (TargetInstance.Day = " + day + ")"
                 status_msg_day = " every day of month: " + day + " (1-31)"
 
             elif day_of_week != '':
                 if (int(day_of_week) < 0) or (int(day_of_week) > 6):
-                    print(helpers.color("[!] Please stick to range 0-6 for DayOfWeek"))
-                    return ""
+                    return handle_error_message("[!] Please stick to range 0-6 for DayOfWeek")
                 day_filter = " AND (TargetInstance.DayOfWeek=" + day_of_week + ")"
                 status_msg_day = " every day of week: " + day_of_week + " (0-6)"
                 # creating and bind a dummy WMI event filter with a "nop event consumer" as workaround for win32_localtime.day_of_week bug
