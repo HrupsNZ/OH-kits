@@ -1,16 +1,9 @@
-# Name of the module. The full name in the CLI will still include the path like
-# powershell/lateral_movement/Invoke-Template
 name: Invoke-FodhelperProgIDs
-
-# The authors responsible for the original code and/or writing the Empire module for it.
 authors:
   - '@V3ded'
   - '@m1m1k4tz'
-
 description: |
-  Bypasses UAC by performing an registry modification for FodHelper but uses ProgIDs to bypass antivirus signatures on the FodHelper registry key
-
-
+  Bypasses UAC by performing a registry modification for FodHelper but uses ProgIDs to bypass antivirus signatures on the registry key
 software: ''
 techniques:
   - T1088
@@ -22,9 +15,7 @@ language: powershell
 min_language_version: '2'
 comments:
   - 'https://v3ded.github.io/redteam/utilizing-programmatic-identifiers-progids-for-uac-bypasses'
-
 options:
-  # The 'Agent' option is the only one that MUST be in a module
   - name: Agent
     description: Agent to run module on.
     required: true
@@ -57,6 +48,4 @@ script: |
       Remove-Item "HKCU:\Software\Classes\.pwn\" -Recurse -Force
   }
 
-# This usually just consists of invoking the function. {{ PARAMS }} injects the options into the command.
-# More info on customizing the script_end and option formatter are in the wiki.
 script_end: Invoke-FodhelperProgIDs {{ PARAMS }}
