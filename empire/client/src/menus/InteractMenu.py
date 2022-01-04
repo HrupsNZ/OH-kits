@@ -104,7 +104,7 @@ class InteractMenu(Menu):
 
         Usage: shell <shell_cmd>
         """
-        response = state.agent_shell(self.session_id, shell_cmd)
+        response = state.agent_shell(self.session_id, 'shell ' + shell_cmd)
         print(print_util.color('[*] Tasked ' + self.session_id + ' to run Task ' + str(response['taskID'])))
 
     @command
