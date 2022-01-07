@@ -9369,6 +9369,100 @@ Custom PSObject with ACL entries.
     }
 }
 
+function Get-NetGmsa {
+<#
+.SYNOPSIS
+
+Search for all Group Managed Service Accounts in AD.
+
+Author: Jean-Francois Maes (@jfmaes)  
+License: BSD 3-Clause  
+Required Dependencies: Get-DomainSearcher, Get-ObjectACL
+
+.DESCRIPTION
+
+
+.PARAMETER Domain
+
+Specifies the domain to use for the query, defaults to the current domain.
+
+
+
+.PARAMETER DomainController
+
+Specifies an Active Directory server (domain controller) to bind to.
+
+
+.PARAMETER Credential
+
+A [Management.Automation.PSCredential] object of alternate credentials
+for connection to the target domain.
+
+
+ .PARAMETER ADSpath
+
+        The LDAP source to search through, e.g. "LDAP://OU=secret,DC=testlab,DC=local"
+        Useful for OU queries.
+    
+
+.OUTPUTS
+
+PowerView.GSMA
+
+Custom PSObject with translated gMSA property fields.
+#>
+
+    [CmdletBinding()]
+    Param (
+        [Parameter(ValueFromPipeline=$True)]
+        [String]
+        $gmsaName = '*',
+        
+        [String]
+        $Domain,
+
+        [String]
+        $DomainController,
+
+        [String]
+        $ADSpath,
+
+        [Switch]
+        $FullData,
+
+        [ValidateRange(1,10000)] 
+        [Int]
+        $PageSize = 200,
+
+        [Management.Automation.PSCredential]
+        $Credential
+    )
+
+    begin {
+        $GMSASearcher = Get-DomainSearcher -Domain $Domain -DomainController $DomainController -Credential $Credential -ADSpath $ADSpath -PageSize $PageSize
+    }
+    process {
+        if ($GMSASearcher) {
+                $GMSASearcher.filter="(&(ObjectClass=msDS-GroupManagedServiceAccount)(name=$gmsaName))"
+            }
+
+            try {
+                $GMSASearcher.FindAll() | Where-Object {$_} | ForEach-Object {
+                    if ($FullData) {
+                        # convert/process the LDAP fields for each result
+                        Convert-LDAPProperty -Properties $_.Properties
+                    }
+                    else { 
+                        # otherwise just returning the ADS paths of the OUs
+                        $_.properties.adspath
+                    }
+                }
+            }
+            catch {
+                Write-Warning $_
+            }
+        }
+  }
 
 function Get-DomainOU {
 <#
