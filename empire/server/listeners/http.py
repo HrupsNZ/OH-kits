@@ -633,7 +633,7 @@ class Listener(object):
                     value = key.split(":")
                     if 'cookie' in value[0].lower() and value[1]:
                         continue
-                    remove += value
+                    remove.append(key)
                 headers = ','.join(remove)
                 # headers = ','.join(customHeaders)
                 stager = stager.replace("$customHeaders = \"\";", "$customHeaders = \"" + headers + "\";")
@@ -650,7 +650,6 @@ class Listener(object):
             stager = stager.replace('REPLACE_STAGING_KEY', stagingKey)
             stager = stager.replace('index.jsp', stage1)
             stager = stager.replace('index.php', stage2)
-
 
             randomizedStager = ''
             # forces inputs into a bytestring to ensure 2/3 compatibility
