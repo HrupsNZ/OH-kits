@@ -21,7 +21,6 @@ class Module(object):
     ):
 
         # read in the common module source code
-        module.script_path = "privesc/PowerUp.ps1"
         script, err = main_menu.modules.get_module_source(
             module_name=module.script_path,
             obfuscate=obfuscate,
