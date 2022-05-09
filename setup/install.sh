@@ -66,7 +66,7 @@ if grep "10.*" /etc/debian_version 2>/dev/null; then
 elif grep -i "NAME=\"Ubuntu\"" /etc/os-release 2>/dev/null; then
   OS_NAME=UBUNTU
   VERSION_ID=$(grep -i VERSION_ID /etc/os-release | grep -o -E [[:digit:]]+\\.[[:digit:]]+)
-  if [ $VERSION_ID != "20.04" ]; then
+  if [ $VERSION_ID <= "20.04" ]; then
     echo -e '\x1b[1;31m[!] Ubuntu must be 20.04\x1b[0m' && exit
   fi
   echo -e "\x1b[1;34m[*] Detected Ubuntu 20.04\x1b[0m"
