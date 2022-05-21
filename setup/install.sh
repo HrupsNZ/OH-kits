@@ -1,4 +1,25 @@
 #!/bin/bash
+
+function usage() {
+	echo "Powershell Empire installer"
+	echo "USAGE: ./install.sh"
+	echo "OPTIONS:"
+	echo "  -y    Assume Yes to all questions (install all optional dependencies)"
+	echo "  -h    Displays this help text"
+}
+
+while getopts "hy" option; do
+	case "${option}" in
+	y) ASSUME_YES=1 ;;
+	h)
+		usage
+		exit
+		;;
+	*)
+		;;
+	esac
+done
+
 function install_powershell() {
   echo -e "\x1b[1;34m[*] Installing PowerShell\x1b[0m"
   if [ "$OS_NAME" == "DEBIAN 10" ]; then
@@ -99,8 +120,12 @@ fi
 
 install_powershell
 
-echo -n -e "\x1b[1;33m[>] Do you want to install xar and bomutils? They are only needed to generate a .dmg stager (y/N)? \x1b[0m"
-read -r answer
+if [ "$ASSUME_YES" == "1" ] ;then
+  answer="Y"
+else
+  echo -n -e "\x1b[1;33m[>] Do you want to install xar and bomutils? They are only needed to generate a .dmg stager (y/N)? \x1b[0m"
+  read -r answer
+fi
 if [ "$answer" != "${answer#[Yy]}" ] ;then
   sudo apt-get install -y make autoconf g++ git zlib1g-dev libxml2-dev libssl1.1 libssl-dev
   install_xar
@@ -109,8 +134,12 @@ else
     echo -e "\x1b[1;34m[*] Skipping xar and bomutils\x1b[0m"
 fi
 
-echo -n -e "\x1b[1;33m[>] Do you want to install OpenJDK? It is only needed to generate a .jar stager (y/N)? \x1b[0m"
-read -r answer
+if [ "$ASSUME_YES" == "1" ] ;then
+  answer="Y"
+else
+  echo -n -e "\x1b[1;33m[>] Do you want to install OpenJDK? It is only needed to generate a .jar stager (y/N)? \x1b[0m"
+  read -r answer
+fi
 if [ "$answer" != "${answer#[Yy]}" ] ;then
   echo -e "\x1b[1;34m[*] Installing OpenJDK\x1b[0m"
   sudo apt-get install -y default-jdk
@@ -136,8 +165,12 @@ elif [ "$OS_NAME" == "KALI" ]; then
   sudo apt-get install -y apt-transport-https dotnet-sdk-3.1
 fi
 
-echo -n -e "\x1b[1;33m[>] Do you want to install Nim and MinGW? It is only needed to generate a Nim stager (y/N)? \x1b[0m"
-read -r answer
+if [ "$ASSUME_YES" == "1" ] ;then
+  answer="Y"
+else
+  echo -n -e "\x1b[1;33m[>] Do you want to install Nim and MinGW? It is only needed to generate a Nim stager (y/N)? \x1b[0m"
+  read -r answer
+fi
 if [ "$answer" != "${answer#[Yy]}" ] ;then
   if [ "$OS_NAME" == "DEBIAN" ]; then
     sudo apt install -y curl git gcc
@@ -164,8 +197,12 @@ if [ "${python_version[0]}" -eq 3 ] && [ "${python_version[1]}" -lt 8 ]; then
       sudo apt-get install -y python3.8 python3.8-dev python3-pip
     elif [ "$OS_NAME" == "DEBIAN" ]; then
       echo -e "\x1b[1;34m[*] Python3 version less than 3.8, installing 3.8\x1b[0m"
-      echo -n -e "\x1b[1;33m[>] Python 3.8 must be built from source on Debian. This might take a bit, do you want to continue (y/N)? \x1b[0m"
-      read -r answer
+      if [ "$ASSUME_YES" == "1" ] ;then
+        answer="Y"
+      else
+        echo -n -e "\x1b[1;33m[>] Python 3.8 must be built from source on Debian. This might take a bit, do you want to continue (y/N)? \x1b[0m"
+        read -r answer
+      fi
       if [ "$answer" != "${answer#[Yy]}" ] ;then
         sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev curl libbz2-dev
         curl -O https://www.python.org/ftp/python/3.8.10/Python-3.8.10.tar.xz
