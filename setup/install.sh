@@ -1,12 +1,16 @@
 #!/bin/bash
 function install_powershell() {
   echo -e "\x1b[1;34m[*] Installing PowerShell\x1b[0m"
-  if [ $OS_NAME == "DEBIAN" ]; then
+  if [ "$OS_NAME" == "DEBIAN 10" ]; then
     wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb
+  elif [ "$OS_NAME" == "DEBIAN 11" ]; then
+    wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb
+  fi
+  if [ "$OS_NAME" == "DEBIAN 1*" ]; then
     sudo dpkg -i packages-microsoft-prod.deb
     sudo apt-get update
     sudo apt-get install -y powershell
-  elif [ $OS_NAME == "UBUNTU" ]; then
+  elif [ "$OS_NAME" == "UBUNTU" ]; then
     sudo apt-get update
     sudo apt-get install -y wget apt-transport-https software-properties-common
     wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
@@ -14,7 +18,7 @@ function install_powershell() {
     sudo apt-get update
     sudo add-apt-repository universe
     sudo apt-get install -y powershell
-  elif [ $OS_NAME == "KALI" ]; then
+  elif [ "$OS_NAME" == "KALI" ]; then
     apt update && apt -y install powershell
   fi
 
@@ -61,7 +65,11 @@ OS_NAME=
 VERSION_ID=
 if grep "10.*" /etc/debian_version 2>/dev/null; then
   echo -e "\x1b[1;34m[*] Detected Debian 10\x1b[0m"
-  OS_NAME=DEBIAN
+  OS_NAME="DEBIAN 10"
+  VERSION_ID=$(cat /etc/debian_version)
+elif grep "11.*" /etc/debian_version 2>/dev/null; then
+  echo -e "\x1b[1;34m[*] Detected Debian 11\x1b[0m"
+  OS_NAME="DEBIAN 11"
   VERSION_ID=$(cat /etc/debian_version)
 elif grep -i "NAME=\"Ubuntu\"" /etc/os-release 2>/dev/null; then
   OS_NAME=UBUNTU
@@ -78,13 +86,13 @@ else
   echo -e '\x1b[1;31m[!] Unsupported OS. Exiting.\x1b[0m' && exit
 fi
 
-if [ $OS_NAME == "DEBIAN" ]; then
+if [ "$OS_NAME" == "DEBIAN 1*" ]; then
   sudo apt-get update
   sudo apt-get install -y python3-dev python3-pip xclip
-elif [ $OS_NAME == "UBUNTU" ] && [ $VERSION_ID == "20.04" ]; then
+elif [ "$OS_NAME" == "UBUNTU" ] && [ $VERSION_ID == "20.04" ]; then
   sudo apt-get update
   sudo apt-get install -y python3-dev python3-pip xclip
-elif [ $OS_NAME == "KALI" ]; then
+elif [ "$OS_NAME" == "KALI" ]; then
   sudo apt-get update
   sudo apt-get install -y python3-dev python3-pip xclip
 fi
@@ -111,17 +119,17 @@ else
 fi
 
 echo -e "\x1b[1;34m[*] Installing dotnet for C# agents and modules\x1b[0m"
-if [ $OS_NAME == "DEBIAN" ]; then
+if [ "$OS_NAME" == "DEBIAN 1*" ]; then
   wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get update
   sudo apt-get install -y apt-transport-https dotnet-sdk-3.1
-elif [ $OS_NAME == "UBUNTU" ]; then
+elif [ "$OS_NAME" == "UBUNTU" ]; then
   wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get update
   sudo apt-get install -y apt-transport-https dotnet-sdk-3.1
-elif [ $OS_NAME == "KALI" ]; then
+elif [ "$OS_NAME" == "KALI" ]; then
   wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get update
@@ -131,7 +139,7 @@ fi
 echo -n -e "\x1b[1;33m[>] Do you want to install Nim and MinGW? It is only needed to generate a Nim stager (y/N)? \x1b[0m"
 read answer
 if [ "$answer" != "${answer#[Yy]}" ] ;then
-  if [ $OS_NAME == "DEBIAN" ]; then
+  if [ "$OS_NAME" == "DEBIAN" ]; then
     sudo apt install -y curl git gcc
     curl https://nim-lang.org/choosenim/init.sh -sSf | sh -s -- -y
     echo "export PATH=/root/.nimble/bin:$PATH" >> ~/.bashrc
@@ -151,10 +159,10 @@ python_version=($(python3 -c 'import sys; print("{} {}".format(sys.version_info.
 
 if [ "${python_version[0]}" -eq 3 ] && [ "${python_version[1]}" -lt 8 ]; then
   if ! command -v python3.8 &> /dev/null; then
-    if [ $OS_NAME == "UBUNTU" ]; then
+    if [ "$OS_NAME" == "UBUNTU" ]; then
       echo -e "\x1b[1;34m[*] Python3 version less than 3.8, installing 3.8\x1b[0m"
       sudo apt-get install -y python3.8 python3.8-dev python3-pip
-    elif [ $OS_NAME == "DEBIAN" ]; then
+    elif [ "$OS_NAME" == "DEBIAN" ]; then
       echo -e "\x1b[1;34m[*] Python3 version less than 3.8, installing 3.8\x1b[0m"
       echo -n -e "\x1b[1;33m[>] Python 3.8 must be built from source on Debian. This might take a bit, do you want to continue (y/N)? \x1b[0m"
       read answer
