@@ -73,8 +73,8 @@ elif grep "11.*" /etc/debian_version 2>/dev/null; then
   VERSION_ID=$(cat /etc/debian_version)
 elif grep -i "NAME=\"Ubuntu\"" /etc/os-release 2>/dev/null; then
   OS_NAME=UBUNTU
-  VERSION_ID=$(grep -i VERSION_ID /etc/os-release | grep -o -E [[:digit:]]+\\.[[:digit:]]+)
-  if [ $VERSION_ID != "20.04" ]; then
+  VERSION_ID=$(grep -i VERSION_ID /etc/os-release | grep -o -E "[[:digit:]]+\\.[[:digit:]]+")
+  if [ "$VERSION_ID" != "20.04" ]; then
     echo -e '\x1b[1;31m[!] Ubuntu must be 20.04\x1b[0m' && exit
   fi
   echo -e "\x1b[1;34m[*] Detected Ubuntu 20.04\x1b[0m"
@@ -89,7 +89,7 @@ fi
 if [ "$OS_NAME" == "DEBIAN 1*" ]; then
   sudo apt-get update
   sudo apt-get install -y python3-dev python3-pip xclip
-elif [ "$OS_NAME" == "UBUNTU" ] && [ $VERSION_ID == "20.04" ]; then
+elif [ "$OS_NAME" == "UBUNTU" ] && [ "$VERSION_ID" == "20.04" ]; then
   sudo apt-get update
   sudo apt-get install -y python3-dev python3-pip xclip
 elif [ "$OS_NAME" == "KALI" ]; then
@@ -100,7 +100,7 @@ fi
 install_powershell
 
 echo -n -e "\x1b[1;33m[>] Do you want to install xar and bomutils? They are only needed to generate a .dmg stager (y/N)? \x1b[0m"
-read answer
+read -r answer
 if [ "$answer" != "${answer#[Yy]}" ] ;then
   sudo apt-get install -y make autoconf g++ git zlib1g-dev libxml2-dev libssl1.1 libssl-dev
   install_xar
@@ -110,7 +110,7 @@ else
 fi
 
 echo -n -e "\x1b[1;33m[>] Do you want to install OpenJDK? It is only needed to generate a .jar stager (y/N)? \x1b[0m"
-read answer
+read -r answer
 if [ "$answer" != "${answer#[Yy]}" ] ;then
   echo -e "\x1b[1;34m[*] Installing OpenJDK\x1b[0m"
   sudo apt-get install -y default-jdk
@@ -137,7 +137,7 @@ elif [ "$OS_NAME" == "KALI" ]; then
 fi
 
 echo -n -e "\x1b[1;33m[>] Do you want to install Nim and MinGW? It is only needed to generate a Nim stager (y/N)? \x1b[0m"
-read answer
+read -r answer
 if [ "$answer" != "${answer#[Yy]}" ] ;then
   if [ "$OS_NAME" == "DEBIAN" ]; then
     sudo apt install -y curl git gcc
@@ -165,14 +165,14 @@ if [ "${python_version[0]}" -eq 3 ] && [ "${python_version[1]}" -lt 8 ]; then
     elif [ "$OS_NAME" == "DEBIAN" ]; then
       echo -e "\x1b[1;34m[*] Python3 version less than 3.8, installing 3.8\x1b[0m"
       echo -n -e "\x1b[1;33m[>] Python 3.8 must be built from source on Debian. This might take a bit, do you want to continue (y/N)? \x1b[0m"
-      read answer
+      read -r answer
       if [ "$answer" != "${answer#[Yy]}" ] ;then
         sudo apt-get install -y build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev curl libbz2-dev
         curl -O https://www.python.org/ftp/python/3.8.10/Python-3.8.10.tar.xz
         tar -xf Python-3.8.10.tar.xz
         cd Python-3.8.10
         ./configure --enable-optimizations
-        make -j$(nproc)
+        make -j"$(nproc)"
         sudo make altinstall
         cd ..
         rm -rf Python-3.8.10
