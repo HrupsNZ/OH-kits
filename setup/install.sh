@@ -172,15 +172,11 @@ else
   read -r answer
 fi
 if [ "$answer" != "${answer#[Yy]}" ] ;then
-  if [ "$OS_NAME" == "DEBIAN" ]; then
-    sudo apt install -y curl git gcc
-    curl https://nim-lang.org/choosenim/init.sh -sSf | sh -s -- -y
-    echo "export PATH=/root/.nimble/bin:$PATH" >> ~/.bashrc
-    export PATH=/root/.nimble/bin:$PATH
-    SOURCE_MESSAGE=true
-  else
-    sudo apt install -y nim
-  fi
+  sudo apt install -y curl git gcc
+  curl https://nim-lang.org/choosenim/init.sh -sSf | sh -s -- -y
+  echo "export PATH=/root/.nimble/bin:$PATH" >> ~/.bashrc
+  export PATH=/root/.nimble/bin:$PATH
+  SOURCE_MESSAGE=true
   nimble install -y winim zippy nimcrypto
   sudo apt install -y mingw-w64
 else
