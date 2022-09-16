@@ -152,17 +152,17 @@ if [ "$OS_NAME" == "DEBIAN 1*" ]; then
   wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get update
-  sudo apt-get install -y apt-transport-https dotnet-sdk-3.1
-elif [ "$OS_NAME" == "UBUNTU" ]; then
+  sudo apt-get install -y apt-transport-https dotnet-sdk-6.0
+elif [ $OS_NAME == "UBUNTU" ]; then
   wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get update
-  sudo apt-get install -y apt-transport-https dotnet-sdk-3.1
-elif [ "$OS_NAME" == "KALI" ]; then
+  sudo apt-get install -y apt-transport-https dotnet-sdk-6.0
+elif [ $OS_NAME == "KALI" ]; then
   wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get update
-  sudo apt-get install -y apt-transport-https dotnet-sdk-3.1
+  sudo apt-get install -y apt-transport-https dotnet-sdk-6.0
 fi
 
 if [ "$ASSUME_YES" == "1" ] ;then
