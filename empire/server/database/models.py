@@ -112,9 +112,11 @@ class Agent(Base):
 
     @stale.expression
     def stale(cls):
-        return (func.now() - cls.lastseen_time) > (
-            30 + cls.delay + cls.delay * cls.jitter
-        )
+        threshold = 30 + cls.delay + cls.delay * cls.jitter
+        seconds_elapsed = (
+            func.julianday(utcnow()) - func.julianday(cls.lastseen_time)
+        ) * 86400.0
+        return seconds_elapsed > threshold
 
     def __repr__(self):
         return "<Agent(name='%s')>" % (self.name)
