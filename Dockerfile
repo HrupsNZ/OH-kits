@@ -30,14 +30,15 @@ RUN wget -q https://packages.microsoft.com/config/debian/10/packages-microsoft-p
     apt-get update && \
     apt-get install -qq \
     --no-install-recommends \
-    sudo \
+    apt-transport-https \
+    dotnet-sdk-6.0 \
+    libicu-dev \
+    powershell \
     python3-dev \
     python3-pip \
-    apt-transport-https \
+    sudo \
     xclip \
     zip \
-    powershell \
-    dotnet-sdk-6.0 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /empire
