@@ -43,15 +43,17 @@ RUN wget -q https://packages.microsoft.com/config/debian/10/packages-microsoft-p
 
 WORKDIR /empire
 
-COPY . /empire
-
-RUN mkdir -p /usr/local/share/powershell/Modules && \
-    cp -r ./empire/server/powershell/Invoke-Obfuscation /usr/local/share/powershell/Modules
+COPY pyproject.toml poetry.lock /empire/
 
 RUN pip install poetry \
     --disable-pip-version-check && \
     poetry config virtualenvs.create false && \
-    poetry install
+    poetry install --no-root
+
+COPY . /empire
+
+RUN mkdir -p /usr/local/share/powershell/Modules && \
+    cp -r ./empire/server/powershell/Invoke-Obfuscation /usr/local/share/powershell/Modules
 
 RUN yes | ./ps-empire server --reset
 RUN rm -rf /empire/empire/server/data/empire*
