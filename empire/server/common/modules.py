@@ -308,10 +308,10 @@ class Modules(object):
         if not agent:
             return None, "invalid agent name"
 
-        module_version = float(module.min_language_version or 0)
-        agent_version = float(agent.language_version or 0)
+        module_version = module.min_language_version.split('.') or 0
+        agent_version = agent.language_version.split('.') or 0
         # check if the agent/module PowerShell versions are compatible
-        if module_version > agent_version:
+        if module_version[0] > agent_version[0] and module_version[1] > agent_version[1]:
             return (
                 None,
                 f"module requires PS version {module_version} but agent running PS version {agent_version}",
