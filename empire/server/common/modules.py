@@ -310,8 +310,13 @@ class Modules(object):
 
         module_version = module.min_language_version.split('.') or 0
         agent_version = agent.language_version.split('.') or 0
+        # makes sure the version is the right format: "x.x"
+        if len(agent_version) == 1:
+            agent_version.append(0)
+        if len(module_version) == 1:
+            module_version.append(0)
         # check if the agent/module PowerShell versions are compatible
-        if module_version[0] > agent_version[0] and module_version[1] > agent_version[1]:
+        if ((int(module_version[0]) > int(agent_version[0])) or ((int(module_version[0])) == int(agent_version[0]) and int(module_version[1]) > int(agent_version[1]))):
             return (
                 None,
                 f"module requires PS version {module_version} but agent running PS version {agent_version}",
