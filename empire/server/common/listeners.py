@@ -14,12 +14,12 @@ import os
 import traceback
 from builtins import object, str
 
-from pydispatch import dispatcher
 from sqlalchemy import and_, or_
 from sqlalchemy.orm.attributes import flag_modified
 
 from empire.server.database import models
 from empire.server.database.base import Session
+from empire.server.signal import dispatcher
 
 from . import helpers
 

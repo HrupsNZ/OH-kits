@@ -7,10 +7,9 @@ which help manage those events - logging them, fetching them, etc.
 
 import json
 
-from pydispatch import dispatcher
-
 from empire.server.database import models
 from empire.server.database.base import Session
+from empire.server.signal import dispatcher
 
 # from empire.server.common import db # used in the disabled TODO below
 

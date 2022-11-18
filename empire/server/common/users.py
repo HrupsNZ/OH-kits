@@ -4,10 +4,10 @@ import string
 import threading
 
 import bcrypt
-from pydispatch import dispatcher
 
 from empire.server.database import models
 from empire.server.database.base import Session
+from empire.server.signal import dispatcher
 
 from . import helpers
 

@@ -10,10 +10,10 @@ import traceback
 from builtins import object, str
 from typing import List
 
-from pydispatch import dispatcher
 from requests import Request, Session
 
 from empire.server.common import encryption, helpers, templating
+from empire.server.signal import dispatcher
 from empire.server.utils import data_util, listener_util
 
 

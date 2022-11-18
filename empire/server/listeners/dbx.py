@@ -10,11 +10,11 @@ from textwrap import dedent
 from typing import List
 
 import dropbox
-from pydispatch import dispatcher
 
 from empire.server.common import encryption, helpers, templating
 from empire.server.database import models
 from empire.server.database.base import Session
+from empire.server.signal import dispatcher
 from empire.server.utils import data_util, listener_util
 
 

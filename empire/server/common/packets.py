@@ -66,7 +66,7 @@ import os
 import struct
 import sys
 
-from pydispatch import dispatcher
+from empire.server.signal import dispatcher
 
 # Empire imports
 from . import encryption

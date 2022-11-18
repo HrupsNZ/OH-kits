@@ -22,7 +22,6 @@ from typing import Optional
 from flask_socketio import SocketIO
 from prompt_toolkit import HTML, PromptSession
 from prompt_toolkit.patch_stdout import patch_stdout
-from pydispatch import dispatcher
 from sqlalchemy import and_, func, or_
 
 from empire.server.common import hooks_internal
@@ -31,6 +30,7 @@ from empire.server.common import hooks_internal
 from empire.server.common.config import empire_config
 from empire.server.database import models
 from empire.server.database.base import Session
+from empire.server.signal import dispatcher
 from empire.server.utils import data_util
 
 from . import (
@@ -60,7 +60,7 @@ class MainMenu(cmd.Cmd):
         cmd.Cmd.__init__(self)
 
         # set up the event handling system
-        dispatcher.connect(self.handle_event, sender=dispatcher.Any)
+        dispatcher.connect(self.handle_event)
 
         # globalOptions[optionName] = (value, required, description)
         self.globalOptions = {}
@@ -120,7 +120,7 @@ class MainMenu(cmd.Cmd):
         signal = json.dumps({"print": True, "message": message})
         dispatcher.send(signal, sender="empire")
 
-    def handle_event(self, signal, sender):
+    def handle_event(self, sender, signal_data, **kwargs):
         """
         Whenver an event is received from the dispatcher, log it to the DB,
         decide whether it should be printed, and if so, print it.
@@ -128,12 +128,12 @@ class MainMenu(cmd.Cmd):
         """
         # load up the signal so we can inspect it
         try:
-            signal_data = json.loads(signal)
+            signal_data = json.loads(signal_data)
         except ValueError:
             print(
                 helpers.color(
                     "[!] Error: bad signal received {} from sender {}".format(
-                        signal, sender
+                        signal_data, sender
                     )
                 )
             )

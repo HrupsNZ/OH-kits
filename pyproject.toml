@@ -17,7 +17,6 @@ python = "^3.8"
 urllib3 = "*"
 requests = "^2.24.0"
 setuptools = "*"
-pydispatcher = "*"
 macholib = "*"
 dropbox = "*"
 pyOpenSSL = "*"
@@ -51,6 +50,7 @@ pyvnc = {git = "https://github.com/BC-SECURITY/pyVNC.git"}
 # https://github.com/TheWover/donut/pull/101
 donut-shellcode = {git = "https://github.com/BC-SECURITY/donut.git"}
 Flask = ">=2.1.2"
+django = "^4.1.3"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.4"

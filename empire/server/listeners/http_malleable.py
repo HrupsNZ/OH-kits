@@ -15,11 +15,11 @@ from builtins import object, str
 from typing import List
 
 from flask import Flask, Response, make_response, render_template, request
-from pydispatch import dispatcher
 
 from empire.server.common import encryption, helpers, malleable, packets, templating
 from empire.server.database import models
 from empire.server.database.base import Session
+from empire.server.signal import dispatcher
 from empire.server.utils import data_util, listener_util
 
 

@@ -19,8 +19,7 @@ import ssl
 import threading
 from http.server import BaseHTTPRequestHandler
 
-from pydispatch import dispatcher
-
+from empire.server.signal import dispatcher
 from empire.server.utils import data_util
 
 # Empire imports

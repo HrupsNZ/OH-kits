@@ -66,7 +66,6 @@ import threading
 from builtins import object, str
 from datetime import datetime, timezone
 
-from pydispatch import dispatcher
 from sqlalchemy import and_, func, or_, update
 from zlib_wrapper import decompress
 
@@ -76,6 +75,7 @@ from empire.server.database.base import Session
 
 # Empire imports
 from empire.server.database.models import TaskingStatus
+from empire.server.signal import dispatcher
 
 from . import encryption, events, helpers, messages, packets
 

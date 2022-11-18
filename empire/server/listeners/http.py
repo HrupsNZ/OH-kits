@@ -14,12 +14,12 @@ from textwrap import dedent
 from typing import List
 
 from flask import Flask, make_response, render_template, request, send_from_directory
-from pydispatch import dispatcher
 from werkzeug.serving import WSGIRequestHandler
 
 from empire.server.common import encryption, helpers, packets, templating
 from empire.server.database import models
 from empire.server.database.base import Session
+from empire.server.signal import dispatcher
 from empire.server.utils import data_util, listener_util
 
 
