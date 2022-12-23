@@ -22,12 +22,8 @@ done
 
 function install_powershell() {
   echo -e "\x1b[1;34m[*] Installing PowerShell\x1b[0m"
-  if [ "$OS_NAME" == "DEBIAN 10" ]; then
-    wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb
-  elif [ "$OS_NAME" == "DEBIAN 11" ]; then
-    wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb
-  fi
-  if [ "$OS_NAME" == "DEBIAN 1*" ]; then
+  if [ "$OS_NAME" == "DEBIAN" ]; then
+    wget https://packages.microsoft.com/config/debian/"${VERSION_ID}"/packages-microsoft-prod.deb
     sudo dpkg -i packages-microsoft-prod.deb
     sudo apt-get update
     sudo apt-get install -y powershell
@@ -85,12 +81,12 @@ OS_NAME=
 VERSION_ID=
 if grep "10.*" /etc/debian_version 2>/dev/null; then
   echo -e "\x1b[1;34m[*] Detected Debian 10\x1b[0m"
-  OS_NAME="DEBIAN 10"
-  VERSION_ID=$(cat /etc/debian_version)
+  OS_NAME="DEBIAN"
+  VERSION_ID="10"
 elif grep "11.*" /etc/debian_version 2>/dev/null; then
   echo -e "\x1b[1;34m[*] Detected Debian 11\x1b[0m"
-  OS_NAME="DEBIAN 11"
-  VERSION_ID=$(cat /etc/debian_version)
+  OS_NAME="DEBIAN"
+  VERSION_ID="11"
 elif grep -i "NAME=\"Ubuntu\"" /etc/os-release 2>/dev/null; then
   OS_NAME=UBUNTU
   VERSION_ID=$(grep -i VERSION_ID /etc/os-release | grep -o -E "[[:digit:]]+\\.[[:digit:]]+")
@@ -106,7 +102,7 @@ else
   echo -e '\x1b[1;31m[!] Unsupported OS. Exiting.\x1b[0m' && exit
 fi
 
-if [ "$OS_NAME" == "DEBIAN 1*" ]; then
+if [ "$OS_NAME" == "DEBIAN" ]; then
   sudo apt-get update
   sudo apt-get install -y python3-dev python3-pip xclip
 elif [ "$OS_NAME" == "UBUNTU" ] && [ "$VERSION_ID" == "20.04" ]; then
@@ -147,8 +143,8 @@ else
 fi
 
 echo -e "\x1b[1;34m[*] Installing dotnet for C# agents and modules\x1b[0m"
-if [ "$OS_NAME" == "DEBIAN 1*" ]; then
-  wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+if [ "$OS_NAME" == "DEBIAN" ]; then
+  wget https://packages.microsoft.com/config/debian/"${VERSION_ID}"/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
   sudo apt-get update
   sudo apt-get install -y apt-transport-https dotnet-sdk-6.0
@@ -195,7 +191,7 @@ if [ "${python_version[0]}" -eq 3 ] && [ "${python_version[1]}" -lt 8 ]; then
       if [ "$ASSUME_YES" == "1" ] ;then
         answer="Y"
       else
-        echo -n -e "\x1b[1;33m[>] Python 3.8 must be built from source on Debian. This might take a bit, do you want to continue (y/N)? \x1b[0m"
+        echo -n -e "\x1b[1;33m[>] Python 3.8 must be built from source. This might take a bit, do you want to continue (y/N)? \x1b[0m"
         read -r answer
       fi
       if [ "$answer" != "${answer#[Yy]}" ] ;then

@@ -14,6 +14,12 @@ services:
       dockerfile: .github/install_tests/Debian10.Dockerfile
     image: bcsecurity/empire-test-debian10
     platform: "linux/amd64"
+  debian11:
+    build:
+      context: ../../
+      dockerfile: .github/install_tests/Debian11.Dockerfile
+    image: bcsecurity/empire-test-debian11
+    platform: "linux/amd64"
   kalirolling:
     build:
       context: ../../
