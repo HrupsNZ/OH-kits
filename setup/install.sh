@@ -25,13 +25,15 @@ function install_powershell() {
   if [ "$OS_NAME" == "DEBIAN" ]; then
     wget https://packages.microsoft.com/config/debian/"${VERSION_ID}"/packages-microsoft-prod.deb
     sudo dpkg -i packages-microsoft-prod.deb
+    rm packages-microsoft-prod.deb
     sudo apt-get update
     sudo apt-get install -y powershell
   elif [ "$OS_NAME" == "UBUNTU" ]; then
     sudo apt-get update
     sudo DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y wget apt-transport-https software-properties-common
-    wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
+    wget -q "https://packages.microsoft.com/config/ubuntu/${VERSION_ID}/packages-microsoft-prod.deb"
     sudo dpkg -i packages-microsoft-prod.deb
+    rm packages-microsoft-prod.deb
     sudo apt-get update
     sudo apt-get install -y powershell
   elif [ "$OS_NAME" == "KALI" ]; then
@@ -90,10 +92,11 @@ elif grep "11.*" /etc/debian_version 2>/dev/null; then
 elif grep -i "NAME=\"Ubuntu\"" /etc/os-release 2>/dev/null; then
   OS_NAME=UBUNTU
   VERSION_ID=$(grep -i VERSION_ID /etc/os-release | grep -o -E "[[:digit:]]+\\.[[:digit:]]+")
-  if [ "$VERSION_ID" != "20.04" ]; then
-    echo -e '\x1b[1;31m[!] Ubuntu must be 20.04\x1b[0m' && exit
+  if [[ "$VERSION_ID" == "20.04" || "$VERSION_ID" == "22.04" ]]; then
+    echo -e "\x1b[1;34m[*] Detected Ubuntu ${VERSION_ID}\x1b[0m"
+  else
+    echo -e '\x1b[1;31m[!] Ubuntu must be 20.04 or 22.04\x1b[0m' && exit
   fi
-  echo -e "\x1b[1;34m[*] Detected Ubuntu 20.04\x1b[0m"
 elif grep -i "Kali" /etc/os-release 2>/dev/null; then
   echo -e "\x1b[1;34m[*] Detected Kali\x1b[0m"
   OS_NAME=KALI
@@ -105,7 +108,7 @@ fi
 if [ "$OS_NAME" == "DEBIAN" ]; then
   sudo apt-get update
   sudo apt-get install -y python3-dev python3-pip xclip
-elif [ "$OS_NAME" == "UBUNTU" ] && [ "$VERSION_ID" == "20.04" ]; then
+elif [ "$OS_NAME" == "UBUNTU" ]; then
   sudo apt-get update
   sudo apt-get install -y python3-dev python3-pip xclip
 elif [ "$OS_NAME" == "KALI" ]; then
@@ -146,11 +149,25 @@ echo -e "\x1b[1;34m[*] Installing dotnet for C# agents and modules\x1b[0m"
 if [ "$OS_NAME" == "DEBIAN" ]; then
   wget https://packages.microsoft.com/config/debian/"${VERSION_ID}"/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
+  rm packages-microsoft-prod.deb
   sudo apt-get update
   sudo apt-get install -y apt-transport-https dotnet-sdk-6.0
 elif [ $OS_NAME == "UBUNTU" ]; then
-  wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+  wget https://packages.microsoft.com/config/ubuntu/"${VERSION_ID}"/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
   sudo dpkg -i packages-microsoft-prod.deb
+  rm packages-microsoft-prod.deb
+
+  # If version is 22.04, we need to write an /etc/apt/preferences file
+  # https://github.com/dotnet/core/issues/7699
+  if [ "$VERSION_ID" == "22.04" ]; then
+    echo -e "\x1b[1;34m[*] Detected Ubuntu 22.04, writing /etc/apt/preferences file\x1b[0m"
+    sudo tee -a /etc/apt/preferences <<EOT
+Package: *
+Pin: origin "packages.microsoft.com"
+Pin-Priority: 100
+EOT
+  fi
+
   sudo apt-get update
   sudo apt-get install -y apt-transport-https dotnet-sdk-6.0
 elif [ $OS_NAME == "KALI" ]; then
