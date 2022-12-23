@@ -666,9 +666,9 @@ def old_div(a, b):
 # [1] = /__init__.py ext, is_package = True
 _search_order = [('.py', False), ('/__init__.py', True)]
 
-
 class ZipImportError(ImportError):
     """Exception raised by zipimporter objects."""
+    pass
 
 
 # _get_info() = takes the fullname, then subpackage name (if applicable),
