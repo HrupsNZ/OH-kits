@@ -43,14 +43,9 @@ The `main` branch in `BC-SECURITY/Empire` automatically syncs.
 * For additional guidelines for your PowerShell code itself, check out the [PowerSploit style guide](https://github.com/PowerShellMafia/PowerSploit/blob/master/README.md).
 * For more in-depth docs on developing modules, see the [Module Development docs](https://bc-security.gitbook.io/empire-wiki/module-development)
 
-<<<<<<< Updated upstream
-## Code Formatting and Linting
-* As of Empire 4.4, we are using [psf/black](https://github.com/psf/black) for code formatting.
-=======
 ### Code Formatting and Linting
 
 * We are using [psf/black](https://github.com/psf/black) for code formatting.
->>>>>>> Stashed changes
     * Black is a Python code formatter that helps to keep the codebase uniform and easy to read
 * As of Empire 4.4, we are using [PyCQA/isort](https://github.com/PyCQA/isort)
     * Isort is a Python utility that sorts and formats imports.
@@ -68,12 +63,8 @@ The `main` branch in `BC-SECURITY/Empire` automatically syncs.
 
 Please write tests for your code! We use [pytest](https://docs.pytest.org/en/latest/) for testing. Tests are located in the `tests/` directory. To run the tests, run `pytest` from the root directory of the project.
 
-<<<<<<< Updated upstream
-For tests that take >20-30 seconds, please add the `@pytest.mark.slow` decorator to the test function. This will allow us to skip the slow tests when running the tests, unless we explicitly want to run them with `pytest --runslow`.
-=======
 For tests that take >20-30 seconds, please add the `@pytest.mark.slow` decorator to the test function. This will allow us to skip the slow tests when running the tests, unless we explicitly want to run them with `pytest --runslow`.
 
 ## Upgrading dependencies
 
 Dependencies can be upgraded using [poetry-plugin-up](https://github.com/MousaZeidBaker/poetry-plugin-up).
->>>>>>> Stashed changes
