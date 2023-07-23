@@ -45,7 +45,7 @@ The `main` branch in `BC-SECURITY/Empire` automatically syncs.
 
 ### Code Formatting and Linting
 
-* We are using [psf/black](https://github.com/psf/black) for code formatting.
+* As of Empire 4.4, we are using [psf/black](https://github.com/psf/black) for code formatting.
     * Black is a Python code formatter that helps to keep the codebase uniform and easy to read
 * As of Empire 4.4, we are using [PyCQA/isort](https://github.com/PyCQA/isort)
     * Isort is a Python utility that sorts and formats imports.
