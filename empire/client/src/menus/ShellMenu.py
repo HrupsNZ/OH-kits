@@ -94,7 +94,7 @@ class ShellMenu(Menu):
         response = state.agent_shell(state.agents[agent_name]["session_id"], shell_cmd)
         if shell_cmd.split()[0].lower() in ["cd", "set-location"]:
             shell_return = threading.Thread(
-                target=self.update_directory, args=[agent_name]
+                target=self.update_directory, args=[state.agents[agent_name]["session_id"]]
             )
             shell_return.daemon = True
             shell_return.start()
