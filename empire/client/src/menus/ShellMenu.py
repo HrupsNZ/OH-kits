@@ -91,7 +91,7 @@ class ShellMenu(Menu):
 
         Usage:  <shell_cmd>
         """
-        response = state.agent_shell(agent_name, shell_cmd)
+        response = state.agent_shell(state.agents[agent_name]["session_id"], shell_cmd)
         if shell_cmd.split()[0].lower() in ["cd", "set-location"]:
             shell_return = threading.Thread(
                 target=self.update_directory, args=[agent_name]
