@@ -12,11 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   **Fixed** for any bug fixes.
 -   **Security** in case of vulnerabilities.
 
-## [Unreleased] - 2024-08-13
+## [Unreleased]
 
 -   Added nameserver check for linux hosts (@0x636f646f)
 
-## [Unreleased]
 
 ## [5.11.2] - 2024-08-08
 
