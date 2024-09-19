@@ -23,6 +23,6 @@ def api_export(args):
         for path, data in openapi["paths"].items():
             for method, _ in data.items():
                 # {% swagger src="sample.yaml" path="/stars" method="post" %} sample.yaml {% endswagger %}
-                f.write(f"{{% swagger src=\"openapi.yaml\" path=\"{path}\" method=\"{method}\" %}} openapi.yaml {{% endswagger %}}\n")
+                f.write(f"{{% swagger src=\"./openapi.yaml\" path=\"{path}\" method=\"{method}\" %}} [./openapi.yaml](./openapi.yaml) {{% endswagger %}}\n")
 
     print(f"gitbook page written to {gitbook_page}")
