@@ -3,6 +3,8 @@ import sys
 
 import yaml
 
+from empire import config_manager
+
 log = logging.getLogger(__name__)
 
 
@@ -15,7 +17,8 @@ class EmpireCliConfig:
             self.set_yaml(location)
         if len(self.yaml.items()) == 0:
             log.info("Loading default config")
-            self.set_yaml("./empire/client/config.yaml")
+            self.set_yaml(config_manager.CONFIG_CLIENT_PATH)
+        config_manager.check_config_permission(self.yaml, "client")
 
     def set_yaml(self, location: str):
         try:
@@ -25,6 +28,5 @@ class EmpireCliConfig:
             log.error(exc)
         except FileNotFoundError as exc:
             log.error(exc)
-
 
 empire_config = EmpireCliConfig()

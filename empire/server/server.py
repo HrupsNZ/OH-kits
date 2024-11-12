@@ -70,7 +70,9 @@ CSHARP_DIR_BASE = os.path.join(os.path.dirname(__file__), "csharp/Covenant")
 INVOKE_OBFS_SRC_DIR_BASE = os.path.join(
     os.path.dirname(__file__), "data/Invoke-Obfuscation"
 )
-INVOKE_OBFS_DST_DIR_BASE = "/usr/local/share/powershell/Modules/Invoke-Obfuscation"
+
+user_home = Path.home()
+INVOKE_OBFS_DST_DIR_BASE = user_home / ".local" / "share" / "powershell" / "Modules" / "Invoke-Obfuscation"
 
 
 def reset():

@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 import yaml
+from empire import config_manager
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 log = logging.getLogger(__name__)
@@ -133,6 +134,7 @@ if "--config" in sys.argv:
     config_dict = set_yaml(location)
 if len(config_dict.items()) == 0:
     log.info("Loading default config")
-    config_dict = set_yaml("./empire/server/config.yaml")
+    config_dict = set_yaml(config_manager.CONFIG_SERVER_PATH)
 
+config_manager.check_config_permission(config_dict, "server")
 empire_config = EmpireConfig(config_dict)
