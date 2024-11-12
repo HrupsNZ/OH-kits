@@ -144,6 +144,9 @@ def check_submodules():
 
 
 def fetch_submodules():
+    if not os.path.exists(Path(".git")):
+        log.info("No .git directory found. Skipping submodule fetch.")
+        return
     command = ["git", "submodule", "update", "--init", "--recursive"]
     run_as_user(command)
 
