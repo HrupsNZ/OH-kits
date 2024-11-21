@@ -29,4 +29,5 @@ class EmpireCliConfig:
         except FileNotFoundError as exc:
             log.error(exc)
 
+
 empire_config = EmpireCliConfig()

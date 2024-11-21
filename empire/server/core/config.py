@@ -3,8 +3,9 @@ import sys
 from pathlib import Path
 
 import yaml
-from empire import config_manager
 from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+from empire import config_manager
 
 log = logging.getLogger(__name__)
 

@@ -2,9 +2,7 @@
 
 import sys
 
-from empire import arguments
-from empire import config_manager
-
+from empire import arguments, config_manager
 
 if __name__ == "__main__":
     args = arguments.args
