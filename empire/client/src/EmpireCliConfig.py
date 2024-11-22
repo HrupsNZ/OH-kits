@@ -18,7 +18,7 @@ class EmpireCliConfig:
         if len(self.yaml.items()) == 0:
             log.info("Loading default config")
             self.set_yaml(config_manager.CONFIG_CLIENT_PATH)
-        config_manager.check_config_permission(self.yaml, "client")
+            config_manager.check_config_permission(self.yaml, "client")
 
     def set_yaml(self, location: str):
         try:

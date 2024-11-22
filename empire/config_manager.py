@@ -44,24 +44,32 @@ def check_config_permission(config_dict: dict, config_type: str):
     # Define paths to check based on config type
     if config_type == "server":
         paths_to_check = {
-            ("api", "cert_path"): config_dict["api"]["cert_path"],
-            ("database", "sqlite", "location"): config_dict["database"]["sqlite"][
-                "location"
-            ],
-            ("starkiller", "directory"): config_dict["starkiller"]["directory"],
-            ("logging", "directory"): config_dict["logging"]["directory"],
-            ("debug", "last_task", "file"): config_dict["debug"]["last_task"]["file"],
-            ("directories", "downloads"): config_dict["directories"].get("downloads"),
+            ("api", "cert_path"): config_dict.get("api", {}).get("cert_path"),
+            ("database", "sqlite", "location"): config_dict.get("database", {})
+            .get("sqlite", {})
+            .get("location"),
+            ("starkiller", "directory"): config_dict.get("starkiller", {}).get(
+                "directory"
+            ),
+            ("logging", "directory"): config_dict.get("logging", {}).get("directory"),
+            ("debug", "last_task", "file"): config_dict.get("debug", {})
+            .get("last_task", {})
+            .get("file"),
+            ("directories", "downloads"): config_dict.get("directories", {}).get(
+                "downloads"
+            ),
         }
         config_path = CONFIG_SERVER_PATH  # Use the server config path
 
     elif config_type == "client":
         paths_to_check = {
-            ("logging", "directory"): config_dict["logging"]["directory"],
-            ("directories", "downloads"): config_dict["directories"].get("downloads"),
-            ("directories", "generated-stagers"): config_dict["directories"].get(
-                "generated-stagers"
+            ("logging", "directory"): config_dict.get("logging", {}).get("directory"),
+            ("directories", "downloads"): config_dict.get("directories", {}).get(
+                "downloads"
             ),
+            ("directories", "generated-stagers"): config_dict.get(
+                "directories", {}
+            ).get("generated-stagers"),
         }
         config_path = CONFIG_CLIENT_PATH  # Use the client config path
 
@@ -70,13 +78,21 @@ def check_config_permission(config_dict: dict, config_type: str):
 
     # Check permissions and update paths as needed
     for keys, dir_path in paths_to_check.items():
-        if not os.access(dir_path, os.W_OK):
+        if dir_path is None:
+            continue
+
+        current_dir = dir_path
+        while current_dir and not os.path.exists(current_dir):
+            current_dir = os.path.dirname(current_dir)
+
+        if not os.access(current_dir, os.W_OK):
             log.info(
-                "No write permission for %s. Switching to fallback directory.", dir_path
+                "No write permission for %s. Switching to fallback directory.",
+                current_dir,
             )
             user_home = Path.home()
             fallback_dir = os.path.join(
-                user_home, ".empire", dir_path.removeprefix("empire/")
+                user_home, ".empire", str(current_dir).removeprefix("empire/")
             )
 
             # Update the directory in config_dict
@@ -91,10 +107,16 @@ def check_config_permission(config_dict: dict, config_type: str):
 
     # Write the updated configuration back to the correct YAML file
     with open(config_path, "w") as config_file:
-        yaml.safe_dump(config_dict, config_file)
+        yaml.safe_dump(paths2str(config_dict), config_file)
 
-    log.info(
-        "Updated %s config.yaml to use fallback directory: %s",
-        config_type,
-        fallback_dir,
-    )
+    return config_dict
+
+
+def paths2str(data):
+    if isinstance(data, dict):
+        return {key: paths2str(value) for key, value in data.items()}
+    if isinstance(data, list):
+        return [paths2str(item) for item in data]
+    if isinstance(data, Path):
+        return str(data)
+    return data
