@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 -   Fixed issue with C# exe and shellcode not compiling PowerShell stagers
+-   Fix delay/jitter adjustment in python agent (@janit0rjoe)
 
 ## [5.12.1] - 2025-01-08
 
