@@ -37,15 +37,15 @@
 
           using (StreamReader reader = new StreamReader(assembly.GetManifestResourceStream(resourceName)))
           {
-              string script = reader.ReadToEnd();
-              ps.AddScript(script);
+            string script = reader.ReadToEnd();
+            ps.AddScript(script);
           }
           ps.Invoke();
 
         }
         catch (Exception e)
         {
-            Console.WriteLine("Error: " + e.Message.ToString());
+          Console.WriteLine("Error: " + e.Message.ToString());
         }
       }
     }

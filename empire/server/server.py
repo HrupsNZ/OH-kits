@@ -86,13 +86,14 @@ def reset():
         f"{CSHARP_DIR_BASE}/Data/Tasks/CSharp/Compiled/netcoreapp3.0"
     )
 
+    file_util.clear_file_contents(f"{CSHARP_DIR_BASE}/Data/EmbeddedResources/launcher.txt")
+
     if os.path.exists(empire_config.starkiller.directory):
         shutil.rmtree(empire_config.starkiller.directory)
 
     file_util.remove_file("data/sessions.csv")
     file_util.remove_file("data/credentials.csv")
     file_util.remove_file("data/master.log")
-
 
 def shutdown_handler(signum, frame):
     """
