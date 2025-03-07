@@ -4,7 +4,7 @@
 * [Quickstart](quickstart/README.md)
   * [Installation](quickstart/installation/README.md)
   * [Configuration](quickstart/configuration/README.md)
-    * [Server](quickstart/configuration/server.md)
+    * [Server](quickstart/server.md)
     * [Client](quickstart/configuration/client.md)
 * [RESTful API](restful-api/README.md)
 * [Listeners](listeners/README.md)

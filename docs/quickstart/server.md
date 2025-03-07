@@ -104,7 +104,7 @@ directories:
   downloads: downloads
 ```
 
-* **logging** - See [Logging](../../logging/logging.md) for more information on logging configuration.
+* **logging** - See [Logging](../logging/logging.md) for more information on logging configuration.
 
 * **submodules** - Control if submodules wil be auto updated on startup.
 

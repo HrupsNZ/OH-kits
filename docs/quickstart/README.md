@@ -14,17 +14,7 @@ Empire uses a server/client architecture which requires running each in separate
 ./ps-empire server -h
 ```
 
-### Client
-
-```bash
-# Start Client
-./ps-empire client
-
-# Help
-./ps-empire client -h
-```
-
-Both the client and server  can be reset by passing a `--reset` flag. This will delete the database and any files that were created at runtime. It is recommended to run a `--reset` after any upgrades.\
+The server can be reset by passing a `--reset` flag. This will delete the database and any files that were created at runtime. It is recommended to run a `--reset` after any upgrades.
 
 
 ```
@@ -32,15 +22,7 @@ Both the client and server  can be reset by passing a `--reset` flag. This will 
 ./ps-empire server --reset
 ```
 
-## Main Menu
 
-Once you hit the main menu, you'll see the number of active agents, listeners, and loaded modules.
-
-![](<../.gitbook/assets/image (8).png>)
-
-The **help** command should work for all menus, and almost everything that can be tab-completable is (menu commands, agent names, local file paths where relevant, etc.).
-
-You can ctrl+C to rage quit at any point. Starting Empire back up should preserve existing communicating agents, and any existing listeners will be restarted (as their config is stored in the SQLite backend database).
 
 ## Listeners 101
 
@@ -79,8 +61,6 @@ When you're finished with an agent, use **exit** from the Agent menu or **kill N
 To see available modules, type **usemodule \[tab]**. To search module names/descriptions, use **searchmodule privesc** and matching module names/descriptions will be output.
 
 To use a module, for example share finder from PowerView, type **usemodule situational\_awareness/network/sharefinder** and press enter. info will display all current module options.
-
-![](../.gitbook/assets/image.png)
 
 To set an option, like the domain for sharefinder, use **set Domain testlab.local**. The Agent argument is always required, and should be auto-filled from jumping to a module from an agent menu. You can also **set Agent \[tab]** to tab-complete an agent name. **execute** will task the agent to execute the module, and **back** will return you to the agent's main menu. Results will be displayed as they come back.
 
