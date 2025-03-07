@@ -1,4 +1,4 @@
-# Table of contents
+# Table of Contents
 
 * [Empire](README.md)
 * [Quickstart](quickstart/README.md)
