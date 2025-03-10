@@ -51,8 +51,8 @@ submodules:
 plugin_marketplace:
   registries:
     - name: BC-SECURITY
-      git_url: git@github.com:BC-SECURITY/Empire-Plugin-Registry-Sponsors.git
-      ref: v3.0.0-rc1
+      git_url: git@github.com:BC-SECURITY/Empire-Plugin-Registry.git
+      ref: main
       file: registry.yaml
 directories:
   downloads: downloads
