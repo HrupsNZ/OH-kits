@@ -1,7 +1,7 @@
 # CLI Client (LEGACY)
 
 [!NOTE]
-> The CLI Client was the first interface created for the Empire C2 suite but is no longer the recommended method of interacting with the Empire server. Starkiller has replaced the CLI client as a modern interface and is now the recommend method of interacting with the Empire server. 
+> The CLI Client was the first interface created for the Empire C2 suite but is no longer the recommended method of interacting with the Empire server. Starkiller has replaced the CLI client as a modern interface and is now the recommend method of interacting with the Empire server.
 
 The Client configuration is managed via [empire/client/config.yaml](https://github.com/BC-SECURITY/Empire/blob/master/empire/client/config.yaml).
 
@@ -18,15 +18,14 @@ Once launched, Empire checks for user write permissions on paths specified in `c
     localhost:
       host: https://localhost
       port: 1337
-      socketport: 5000
       username: empireadmin
       password: password123
       autoconnect: true
     ```
-* **suppress-self-cert-warning** - Suppress the HTTP warnings when connecting to an Empire instance that uses a self-signed cert.
-* **auto-copy-stagers** - Automatically copy generated stager text to the clipboard.
+* **suppress_self_cert_warning** - Suppress the HTTP warnings when connecting to an Empire instance that uses a self-signed cert.
+* **auto_copy_stagers** - Automatically copy generated stager text to the clipboard.
 * **directories** -  Control where Empire should read and write specific data.
-* **mouse-support** -  Enable/disable mouse functionality for the client.
+* **mouse_support** -  Enable/disable mouse functionality for the client.
 
 ```yaml
 directories:
