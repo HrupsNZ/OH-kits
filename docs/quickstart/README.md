@@ -31,7 +31,7 @@ It is strongly recommended that these be changed if Empire is being used for any
 
 ## Listeners 101
 
-The first thing you need to do is set up a local listener. The **listeners** command will jump you to the listener management menu. Any active listeners will be displayed, and this information can be redisplayed at any time with the **list** command. The `uselistener` command will allow you to select the type of listener. Hitting TAB after this command will show all available listener types. The info command will display the currently set listener options.
+The first thing you need to do is set up a local listener. The **listeners** tab will display any active listeners, and active listeners can be disabled or modified from this tab. The `create` button in the top right will prompt you to select a listener type to build. The dropdown supports fuzzy search and tab completion. Each listener will have it's own set of required and optional parameters. 
 
 ![](<../.gitbook/assets/image (7).png>)
 
