@@ -22,6 +22,12 @@ The server can be reset by passing a `--reset` flag. This will delete the databa
 ./ps-empire server --reset
 ```
 
+Default credentials are set in the config.yaml and are: 
+```
+Username: empireadmin
+Password: password123
+```
+It is strongly recommended that these be changed if Empire is being used for any kind of operational engagement.
 
 
 ## Listeners 101

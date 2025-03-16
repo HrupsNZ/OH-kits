@@ -6,8 +6,7 @@ Empire supports multiple listener types, providing flexibility in how agents com
 ## Listener Types
 Empire offers several listener types designed for different network conditions and evasion techniques:
 
-- **HTTP** – A standard HTTP listener for internet-facing operations.
-- **HTTPS** – An encrypted listener for secure communications.
+- **HTTP/HTTPS** – A standard HTTP listener for internet-facing operations supports both standard HTTP and encryptedd HTTPS.
 - **HTTP Malleable** – A customizable HTTP listener that allows beacons to match specific threat profiles.
 - **SMB** – A peer-to-peer listener that works over SMB pipes (**currently only supports IronPython**).
 - **HTTP Hop** – A listener that adds an intermediate hop or redirection server using PHP.
