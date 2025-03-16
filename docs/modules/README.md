@@ -8,7 +8,7 @@ Modules in Empire are reusable pieces of code that allow operators to perform ta
 You can import and execute external scripts such as PowerShell or Python without the need to create a fully dedicated module. This is useful for quick operations where you want to load and execute a script on the fly.
 
 ### Examples
-{% tabs %}
+
 
 {% tab title="PowerShell" %}
 Importing and Executing PowerShell Scripts

@@ -2,7 +2,7 @@
 
 ## Run Commands
 
-Empire uses a server/client architecture which requires running each in separate terminals.
+Empire uses a server/client architecture which is handled automatically by the startup script. The server will continue running from the terminal that it is launched from and Starkiller will be started on the configured port
 
 ### Server
 
@@ -31,44 +31,50 @@ It is strongly recommended that these be changed if Empire is being used for any
 
 ## Listeners 101
 
-The first thing you need to do is set up a local listener. The **listeners** tab will display any active listeners, and active listeners can be disabled or modified from this tab. The `create` button in the top right will prompt you to select a listener type to build. The dropdown supports fuzzy search and tab completion. Each listener will have it's own set of required and optional parameters. 
+The first thing you need to do is set up a local listener. The **listeners** tab will display any active listeners, and active listeners can be disabled or modified from this tab. The `create` button in the top right will prompt you to select a listener type to build. The dropdown supports fuzzy search and tab completion. Each listener will have its own set of required and optional parameters. 
 
-![](<../.gitbook/assets/image (7).png>)
+![](<../.gitbook/assets/Listeners_Tab.PNG>)
 
-The info command will display the currently configured listener options. Set your host/port by doing something like set Host [http://192.168.52.142:8081](http://192.168.52.142:8081). This is tab-completable, and you can also use domain names here). The port will automatically be pulled out, and the backend will detect if you're doing a HTTP or HTTPS listener. For HTTPS listeners, you must first set the CertPath to be a local .pem file. The provided **./setup/cert.sh** script will generate a self-signed cert and place it in **./data/empire.pem**.
+HTTP is the most commonly used lsitener and supports both HTTP and HTTPS. For HTTPS, you must first set the CertPath to be a local .pem file. The provided **./setup/cert.sh** script will generate a self-signed cert and place it in **~/.local/share/empire/cert/empire.pem**.
 
-Set optional and WorkingHours, KillDate, DefaultDelay, and DefaultJitter for the listener, as well as whatever name you want it to be referred to as. You can then type **execute** to start the listener. If the name is already taken, a nameX variant will be used, and Empire will alert you if the port is already in use.
+Set any optional paramaters such as WorkingHours, KillDate, DefaultDelay, and DefaultJitter for the listener, as well as whatever name you want it to be referred to as. You can then hit **submit** to start the listener. If the name is already taken, a nameX variant will be used, and Empire will alert you if the port is already in use.
 
 ## Stagers 101
 
 The staging process is described \[\[here|Staging]].
 
-Empire implements various stagers in a modular format in **./lib/stagers/\*** . These include dlls, macros, one-liners, and more. To use a stager, from the main, listeners, or agents menu, use usestager \[tab] to tab-complete the set of available stagers, and you'll be taken to the individual stager's menu. The UI here functions similarly to the post module menu, i.e set/unset/info and generate to generate the particular output code.
+Empire implements various stagers in a modular format in **./empire/server/stagers/** . These include dlls, macros, one-liners, and more. To use a stager, select the stagers tab and click **create**, and you'll be taken to the individual stager's menu. The stagers tab will display any previously created stagers, along with key information about it them such as the agent lanuague it will use and what listener it is keyed to.
 
-![](<../.gitbook/assets/image (5).png>)
+![](<../.gitbook/assets/Stagers.PNG>)
 
-For UserAgent and proxy options, default uses the system defaults, none clears that option from being used in the stager, and anything else is assumed to be a custom setting (note, this last bit isn't properly implemented for proxy settings yet). From the Listeners menu, you can run the **launcher \[listener ID/name]** alias to generate the stage0 launcher for a particular listener (this is the stagers/launcher module in the background). This command can be run from a command prompt on any machine to kick off the staging process.
+For UserAgent and proxy options, default uses the system defaults, none clears that option from being used in the stager, and anything else is assumed to be a custom setting (note, this last bit isn't properly implemented for proxy settings yet).
 
 ## Agents 101
 
-You should see a status message when an agent checks in (i.e. \[+] Initial agent CGUBKC1R3YLHZM4V from 192.168.52.168 now active). Jump to the Agents menu with **agents**. Basic information on active agents should be displayed. Various commands can be executed on specific agent IDs or **all** from the agent menu, i.e. **kill all**. To interact with an agent, use **interact AGENT\_NAME**. Agent names should be tab-completable for all commands.
+When an agent checks in you will get a notification both on the server and in Starkiller.
 
-![](<../.gitbook/assets/image (6).png>)
+![](<../.gitbook/assets/Server_Check_In.PNG>)
+![](<../.gitbook/assets/Starkiller_Checkin.PNG>)
+ 
+Once you have recieved a check in notification you can go to the agents tab and see all checked in agents. If an agent has turned red it means that the agent has failed to checkin and the server can not currently communicate with it. These are reffered to as stale agents 
 
-In an Agent menu, **info** will display more detailed agent information, and help will display all agent commands. If a typed command isn't resolved, Empire will try to interpret it as a shell command (like ps). You can **cd** directories, **upload/download** files, and **rename NEW\_NAME**.
+![](<../.gitbook/assets/Agents_Tab.PNG>)
+
+From here you can click on any agent where you will be presented with a number of tabs including the interact tab for running modules, tasks, and view. The view tab will provide you informaiton that has been collected about the host along with other key informaiton like delay and jitter intervals. 
 
 For each registered agent, a **./downloads/AGENT\_NAME/** folder is created (this folder is renamed with an agent rename). An ./agent.log is created here with timestamped commands/results for agent communication. Downloads/module outputs are broken out into relevant folders here as well.
 
-When you're finished with an agent, use **exit** from the Agent menu or **kill NAME/all** from the Agents menu. You'll get a red notification when the agent exits, and the agent will be removed from the interactive list after.
+When you're finished with an agent, you can either kill it from its interaction page or from the Agents tab. 
 
 ## Modules 101
 
-To see available modules, type **usemodule \[tab]**. To search module names/descriptions, use **searchmodule privesc** and matching module names/descriptions will be output.
+To see available modules, use the modules tab under agents. This will provide a list of all available modules within Empire. These modules can be searched with the search bar on the lift or filiterd based on a number of criteria. 
+![](<../.gitbook/assets/Modules.PNG>)
 
-To use a module, for example share finder from PowerView, type **usemodule situational\_awareness/network/sharefinder** and press enter. info will display all current module options.
+Clicking on a module will take you to module overview where can read more information and configure settings. You can also select agents to task the module to and can deploy a module to multiple agents simultaneously
 
-To set an option, like the domain for sharefinder, use **set Domain testlab.local**. The Agent argument is always required, and should be auto-filled from jumping to a module from an agent menu. You can also **set Agent \[tab]** to tab-complete an agent name. **execute** will task the agent to execute the module, and **back** will return you to the agent's main menu. Results will be displayed as they come back.
+![](<../.gitbook/assets/Multi_Agent_Tasking.PNG>)
 
 ## Scripts
 
-In addition to formalized modules, you are able to simply import and use a .ps1 script in your remote empire agent. Use the **scriptimport ./path/** command to import the script. The script will be imported and any functions accessible to the script will now be tab completable using the "scriptcmd" command in the agent. This works well for very large scripts with lots of functions that you do not want to break into a module.
+In addition to formalized modules, you are able to simply import and use a .ps1 script in your remote empire agent. Use the **scriptimport** button to import the script. The script will be imported and any functions accessible to the script will now be tab completable using the "scriptcmd" command in the agent interaction window. This works well for very large scripts with lots of functions that you do not want to break into a module.
