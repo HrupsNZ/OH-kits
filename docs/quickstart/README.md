@@ -18,7 +18,6 @@ The server can be reset by passing a `--reset` flag. This will delete the databa
 
 
 ```
-./ps-empire client --reset
 ./ps-empire server --reset
 ```
 
