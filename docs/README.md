@@ -1,8 +1,8 @@
 # Empire Command & Control
-Empire is a powerful post-exploitation and adversary emulation framework designed to aid Red Teams and Penetration Testers. 
+Empire is a powerful post-exploitation and adversary emulation framework designed to aid Red Teams and Penetration Testers.
 Built with flexibility and modularity in mind, Empire enables security professionals to conduct sophisticated operations with ease.
 
-The Empire server is written in Python 3, providing a robust and extensible backend for managing compromised systems. 
+The Empire server is written in Python 3, providing a robust and extensible backend for managing compromised systems.
 Operators can interact with the server using Starkiller, a graphical user interface (GUI) that enhances usability and management.
 
 ## Key Features

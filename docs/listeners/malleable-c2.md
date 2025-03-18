@@ -12,7 +12,7 @@ The parser takes the profile and executes the set of transforms that were script
 
 ![Listener transform functionality from transformation.py](https://i1.wp.com/www.bc-security.org/wp-content/uploads/2020/09/Screenshot_2020-09-06_21-14-54.png?resize=586%2C324&ssl=1)
 
-As of 6.0 malleable profiles can be easily managed from the malleable profiles tab under **listeners**. Here you can manually enter a profile by clicking on create and pasting in the profile configuration. You can also directly edit profiles by clicking on loaded profile and making changes then hitting **submit** 
+As of 6.0 malleable profiles can be easily managed from the malleable profiles tab under **listeners**. Here you can manually enter a profile by clicking on create and pasting in the profile configuration. You can also directly edit profiles by clicking on loaded profile and making changes then hitting **submit**
 ![](<../.gitbook/assets/listeners/Malleable_C2/Malleable_Profiles.PNG>)
 
 Launching a Malleable C2 Listener can be simply done by selecting http_malleable from the dropdown options when selecting a listener. The info page should look familiar since it uses similar settings as the standard HTTP listener, just with the addition **Profiles** dropdown. Profiles are managed from the malleable tab under listeners:

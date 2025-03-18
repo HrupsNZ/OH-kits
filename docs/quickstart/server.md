@@ -22,7 +22,7 @@ api:
 
 * **database** - Configure Empire's database. Empire utilizes MySQL by default for high performance database operations. It can be configured to use sqlite for more lightweight implementations if required For more info on the database, see the [Database](database/README.md) section.
 
-MySQL supports customizing the default url, username, password, and database name. By default these are set to 
+MySQL supports customizing the default url, username, password, and database name. By default these are set to
 ```yaml
 database:
   use: mysql
@@ -46,7 +46,7 @@ database:
 
 
 
-The defaults block defines the properties that are initially loaded into the database when it is first created. These include the staging key, default user and password and obfuscation settings. 
+The defaults block defines the properties that are initially loaded into the database when it is first created. These include the staging key, default user and password and obfuscation settings.
 
 ```yaml
 database:

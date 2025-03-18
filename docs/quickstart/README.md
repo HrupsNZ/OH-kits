@@ -21,7 +21,7 @@ The server can be reset by passing a `--reset` flag. This will delete the databa
 ./ps-empire server --reset
 ```
 
-Default credentials are set in the config.yaml and are: 
+Default credentials are set in the config.yaml and are:
 ```
 Username: empireadmin
 Password: password123
@@ -31,7 +31,7 @@ It is strongly recommended that these be changed if Empire is being used for any
 
 ## Listeners 101
 
-The first thing you need to do is set up a local listener. The **listeners** tab will display any active listeners, and active listeners can be disabled or modified from this tab. The `create` button in the top right will prompt you to select a listener type to build. The dropdown supports fuzzy search and tab completion. Each listener will have its own set of required and optional parameters. 
+The first thing you need to do is set up a local listener. The **listeners** tab will display any active listeners, and active listeners can be disabled or modified from this tab. The `create` button in the top right will prompt you to select a listener type to build. The dropdown supports fuzzy search and tab completion. Each listener will have its own set of required and optional parameters.
 
 ![](<../.gitbook/assets/Listeners_Tab.PNG>)
 
@@ -55,20 +55,20 @@ When an agent checks in you will get a notification both on the server and in St
 
 ![](<../.gitbook/assets/Server_Check_In.PNG>)
 ![](<../.gitbook/assets/Starkiller_Checkin.PNG>)
- 
-Once you have recieved a check in notification you can go to the agents tab and see all checked in agents. If an agent has turned red it means that the agent has failed to checkin and the server can not currently communicate with it. These are reffered to as stale agents 
+
+Once you have recieved a check in notification you can go to the agents tab and see all checked in agents. If an agent has turned red it means that the agent has failed to checkin and the server can not currently communicate with it. These are reffered to as stale agents
 
 ![](<../.gitbook/assets/Agents_Tab.PNG>)
 
-From here you can click on any agent where you will be presented with a number of tabs including the interact tab for running modules, tasks, and view. The view tab will provide you informaiton that has been collected about the host along with other key informaiton like delay and jitter intervals. 
+From here you can click on any agent where you will be presented with a number of tabs including the interact tab for running modules, tasks, and view. The view tab will provide you informaiton that has been collected about the host along with other key informaiton like delay and jitter intervals.
 
 For each registered agent, a **./downloads/AGENT\_NAME/** folder is created (this folder is renamed with an agent rename). An ./agent.log is created here with timestamped commands/results for agent communication. Downloads/module outputs are broken out into relevant folders here as well.
 
-When you're finished with an agent, you can either kill it from its interaction page or from the Agents tab. 
+When you're finished with an agent, you can either kill it from its interaction page or from the Agents tab.
 
 ## Modules 101
 
-To see available modules, use the modules tab under agents. This will provide a list of all available modules within Empire. These modules can be searched with the search bar on the lift or filiterd based on a number of criteria. 
+To see available modules, use the modules tab under agents. This will provide a list of all available modules within Empire. These modules can be searched with the search bar on the lift or filiterd based on a number of criteria.
 ![](<../.gitbook/assets/Modules.PNG>)
 
 Clicking on a module will take you to module overview where can read more information and configure settings. You can also select agents to task the module to and can deploy a module to multiple agents simultaneously
