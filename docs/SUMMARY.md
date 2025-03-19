@@ -48,4 +48,3 @@
   * [Logging](settings/logging.md)
   * [Bypasses](settings/bypasses.md)
   * [IP Filtering](settings/ip-filtering.md)
-* [Release Notes](release-notes.md)

@@ -62,19 +62,16 @@ Once you have recieved a check in notification you can go to the agents tab and 
 
 From here you can click on any agent where you will be presented with a number of tabs including the interact tab for running modules, tasks, and view. The view tab will provide you informaiton that has been collected about the host along with other key informaiton like delay and jitter intervals.
 
-For each registered agent, a **./downloads/AGENT\_NAME/** folder is created (this folder is renamed with an agent rename). An ./agent.log is created here with timestamped commands/results for agent communication. Downloads/module outputs are broken out into relevant folders here as well.
+For each registered agent, a `downloads/AGENT_NAME/` folder is created. An `agent.log` is created here with timestamped commands/results for agent communication. Downloads/module outputs are broken out into relevant folders here as well.
 
 When you're finished with an agent, you can either kill it from its interaction page or from the Agents tab.
 
 ## Modules 101
 
 To see available modules, use the modules tab under agents. This will provide a list of all available modules within Empire. These modules can be searched with the search bar on the lift or filiterd based on a number of criteria.
+
 ![](<../.gitbook/assets/Modules.PNG>)
 
 Clicking on a module will take you to module overview where can read more information and configure settings. You can also select agents to task the module to and can deploy a module to multiple agents simultaneously
 
 ![](<../.gitbook/assets/Multi_Agent_Tasking.PNG>)
-
-## Scripts
-
-In addition to formalized modules, you are able to simply import and use a .ps1 script in your remote empire agent. Use the **scriptimport** button to import the script. The script will be imported and any functions accessible to the script will now be tab completable using the "scriptcmd" command in the agent interaction window. This works well for very large scripts with lots of functions that you do not want to break into a module.
